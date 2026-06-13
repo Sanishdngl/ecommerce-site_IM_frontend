@@ -28,14 +28,8 @@ export default function UsersPage() {
   const [toggleTarget, setToggleTarget] = useState<AdminUser | null>(null)
 
   const columns: ColumnDef<AdminUser, unknown>[] = [
-    {
-      header: 'Username',
-      accessorKey: 'username',
-    },
-    {
-      header: 'Email',
-      accessorKey: 'email',
-    },
+    { header: 'Username', accessorKey: 'username' },
+    { header: 'Email', accessorKey: 'email' },
     {
       header: 'Role',
       accessorKey: 'role',
@@ -47,17 +41,17 @@ export default function UsersPage() {
     },
     {
       header: 'Status',
-      accessorKey: 'isActive',
+      accessorKey: 'is_active',
       cell: ({ row }) => (
-        <Badge variant={row.original.isActive ? 'active' : 'inactive'}>
-          {row.original.isActive ? 'Active' : 'Inactive'}
+        <Badge variant={row.original.is_active ? 'active' : 'inactive'}>
+          {row.original.is_active ? 'Active' : 'Inactive'}
         </Badge>
       ),
     },
     {
       header: 'Created',
-      accessorKey: 'createdAt',
-      cell: ({ row }) => formatDate(row.original.createdAt),
+      accessorKey: 'created_at',
+      cell: ({ row }) => formatDate(row.original.created_at),
     },
     {
       header: 'Actions',
@@ -74,9 +68,9 @@ export default function UsersPage() {
           <button
             onClick={() => setToggleTarget(row.original)}
             className="p-1.5 text-gray-500 hover:text-amber-600 transition-colors"
-            title={row.original.isActive ? 'Deactivate' : 'Activate'}
+            title={row.original.is_active ? 'Deactivate' : 'Activate'}
           >
-            {row.original.isActive ? <ToggleRight size={15} /> : <ToggleLeft size={15} />}
+            {row.original.is_active ? <ToggleRight size={15} /> : <ToggleLeft size={15} />}
           </button>
           <button
             onClick={() => setDeleteTarget(row.original)}
@@ -113,7 +107,6 @@ export default function UsersPage() {
         emptyDescription="Create your first admin user to get started"
       />
 
-      {/* Delete confirmation */}
       <ConfirmDialog
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
@@ -122,15 +115,14 @@ export default function UsersPage() {
         message={`Are you sure you want to delete "${deleteTarget?.username}"? This action cannot be undone.`}
       />
 
-      {/* Toggle confirmation */}
       <ConfirmDialog
         isOpen={!!toggleTarget}
         onClose={() => setToggleTarget(null)}
-        onConfirm={() => toggleUser({ id: toggleTarget!.id, isActive: !toggleTarget!.isActive })}
-        title={toggleTarget?.isActive ? 'Deactivate User' : 'Activate User'}
-        message={`Are you sure you want to ${toggleTarget?.isActive ? 'deactivate' : 'activate'} "${toggleTarget?.username}"?`}
-        confirmLabel={toggleTarget?.isActive ? 'Deactivate' : 'Activate'}
-        confirmVariant={toggleTarget?.isActive ? 'danger' : 'primary'}
+        onConfirm={() => toggleUser(toggleTarget!.id)}
+        title={toggleTarget?.is_active ? 'Deactivate User' : 'Activate User'}
+        message={`Are you sure you want to ${toggleTarget?.is_active ? 'deactivate' : 'activate'} "${toggleTarget?.username}"?`}
+        confirmLabel={toggleTarget?.is_active ? 'Deactivate' : 'Activate'}
+        confirmVariant={toggleTarget?.is_active ? 'danger' : 'primary'}
       />
     </div>
   )

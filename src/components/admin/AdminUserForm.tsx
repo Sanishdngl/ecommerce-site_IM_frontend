@@ -11,9 +11,8 @@ import { Select } from '@/components/common/Select'
 import { Button } from '@/components/common/Button'
 
 const roleOptions = [
-  { value: 'super_admin', label: 'Super Admin' },
   { value: 'maintainer', label: 'Maintainer' },
-  { value: 'viewer', label: 'Viewer' },
+  { value: 'reporter', label: 'Reporter' },
 ]
 
 interface Props {

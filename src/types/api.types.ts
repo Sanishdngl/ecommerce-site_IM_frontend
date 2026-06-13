@@ -1,4 +1,16 @@
 // Common
+export interface ApiError {
+  status: number
+  message: string
+  errors?: Record<string, string[]>
+}
+
+export interface ApiPagination {
+  total: number
+  page: number
+  limit: number
+}
+
 export interface PaginatedResponse<T> {
   data: T[]
   pagination: {
@@ -9,26 +21,16 @@ export interface PaginatedResponse<T> {
   }
 }
 
-export interface ApiError {
-  status: number
-  message: string
-  errors?: Record<string, string[]>
-}
-
 // Auth
 export type AdminRole = 'super_admin' | 'maintainer' | 'viewer'
 
-export interface AuthTokens {
+export interface AdminAuthResponse {
   token: string
-  refreshToken?: string
   user: AdminUser
 }
 
-export interface AdminAuthResponse extends AuthTokens {
-  user: AdminUser
-}
-
-export interface CustomerAuthResponse extends AuthTokens {
+export interface CustomerAuthResponse {
+  token: string
   customer: Customer
 }
 
@@ -49,55 +51,57 @@ export interface Category {
   name: string
   slug: string
   createdAt: string
+  updated_at: string
 }
 
 export interface Product {
   id: string
+  category_id: string
   name: string
   description: string
-  price: number
-  stockQuantity: number
-  imageUrl: string | null
-  categoryId: string
-  category: Pick<Category, 'id' | 'name'>
-  createdAt: string
-  updatedAt: string
+  price: string
+  stock_quantity: number
+  thumbnail_url: string | null
+  list_image_url: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface StockAdjustment {
-  productId: string
-  delta: number
-  reason?: string
-  newQuantity: number
-  adjustedAt: string
+  product_id: string
+  stock_quantity: number
 }
 
 // Customer
 export interface Customer {
   id: string
   email: string
-  firstName: string
-  lastName: string
-  createdAt: string
+  first_name: string
+  last_name: string
+  oauth_provider: string | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface CartItem {
-  id: string
-  productId: string
-  product: Pick<Product, 'id' | 'name' | 'price' | 'imageUrl' | 'stockQuantity'>
+  product_id: string
+  product_name: string
+  price: string
+  thumbnail_url: string | null
   quantity: number
+  stock_quantity: number
 }
 
-export interface Cart {
+export interface CartResponse {
   items: CartItem[]
-  totalItems: number
-  totalPrice: number
 }
 
 export interface GuestCartItem {
   productId: string
   name: string
-  price: number
+  price: string
   imageUrl: string | null
   quantity: number
 }
