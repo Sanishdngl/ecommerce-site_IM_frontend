@@ -1,3 +1,137 @@
+import { useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { type ColumnDef } from '@tanstack/react-table'
+import { Pencil, Trash2, ToggleLeft, ToggleRight, Plus } from 'lucide-react'
+import {
+  useAdminUserList,
+  useDeleteAdminUser,
+  useToggleAdminUser,
+} from '@/hooks/admin/useAdminUsers'
+import { Table } from '@/components/common/Table'
+import { Badge } from '@/components/common/Badge'
+import { Button } from '@/components/common/Button'
+import { ConfirmDialog } from '@/components/common/ConfirmDialog'
+import { formatDate } from '@/utils/formatDate'
+import { adminUsersEdit, ADMIN_USERS_NEW } from '@/constants/routes'
+import type { AdminUser } from '@/types/api.types'
+
 export default function UsersPage() {
-  return <div>Users Page</div>
+  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const page = Number(searchParams.get('page') ?? 1)
+
+  const { data, isLoading } = useAdminUserList({ page })
+  const { mutateAsync: deleteUser } = useDeleteAdminUser()
+  const { mutateAsync: toggleUser } = useToggleAdminUser()
+
+  const [deleteTarget, setDeleteTarget] = useState<AdminUser | null>(null)
+  const [toggleTarget, setToggleTarget] = useState<AdminUser | null>(null)
+
+  const columns: ColumnDef<AdminUser, unknown>[] = [
+    {
+      header: 'Username',
+      accessorKey: 'username',
+    },
+    {
+      header: 'Email',
+      accessorKey: 'email',
+    },
+    {
+      header: 'Role',
+      accessorKey: 'role',
+      cell: ({ row }) => (
+        <Badge variant="role">
+          {row.original.role.replace('_', ' ').replace(/\b\w/g, (c) => c.toUpperCase())}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Status',
+      accessorKey: 'isActive',
+      cell: ({ row }) => (
+        <Badge variant={row.original.isActive ? 'active' : 'inactive'}>
+          {row.original.isActive ? 'Active' : 'Inactive'}
+        </Badge>
+      ),
+    },
+    {
+      header: 'Created',
+      accessorKey: 'createdAt',
+      cell: ({ row }) => formatDate(row.original.createdAt),
+    },
+    {
+      header: 'Actions',
+      id: 'actions',
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(adminUsersEdit(row.original.id))}
+            className="p-1.5 text-gray-500 hover:text-primary-600 transition-colors"
+            title="Edit"
+          >
+            <Pencil size={15} />
+          </button>
+          <button
+            onClick={() => setToggleTarget(row.original)}
+            className="p-1.5 text-gray-500 hover:text-amber-600 transition-colors"
+            title={row.original.isActive ? 'Deactivate' : 'Activate'}
+          >
+            {row.original.isActive ? <ToggleRight size={15} /> : <ToggleLeft size={15} />}
+          </button>
+          <button
+            onClick={() => setDeleteTarget(row.original)}
+            className="p-1.5 text-gray-500 hover:text-red-600 transition-colors"
+            title="Delete"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      ),
+    },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Users</h1>
+          <p className="text-gray-500 text-sm mt-1">Manage administrator accounts</p>
+        </div>
+        <Button onClick={() => navigate(ADMIN_USERS_NEW)}>
+          <Plus size={16} />
+          New User
+        </Button>
+      </div>
+
+      <Table
+        columns={columns}
+        data={data?.data ?? []}
+        isLoading={isLoading}
+        pagination={data?.pagination}
+        onPageChange={(p) => setSearchParams({ page: String(p) })}
+        emptyTitle="No admin users found"
+        emptyDescription="Create your first admin user to get started"
+      />
+
+      {/* Delete confirmation */}
+      <ConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={() => deleteUser(deleteTarget!.id)}
+        title="Delete Admin User"
+        message={`Are you sure you want to delete "${deleteTarget?.username}"? This action cannot be undone.`}
+      />
+
+      {/* Toggle confirmation */}
+      <ConfirmDialog
+        isOpen={!!toggleTarget}
+        onClose={() => setToggleTarget(null)}
+        onConfirm={() => toggleUser({ id: toggleTarget!.id, isActive: !toggleTarget!.isActive })}
+        title={toggleTarget?.isActive ? 'Deactivate User' : 'Activate User'}
+        message={`Are you sure you want to ${toggleTarget?.isActive ? 'deactivate' : 'activate'} "${toggleTarget?.username}"?`}
+        confirmLabel={toggleTarget?.isActive ? 'Deactivate' : 'Activate'}
+        confirmVariant={toggleTarget?.isActive ? 'danger' : 'primary'}
+      />
+    </div>
+  )
 }

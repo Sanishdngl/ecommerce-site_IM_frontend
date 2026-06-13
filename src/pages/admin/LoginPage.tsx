@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
 import { useAdminLogin } from '@/hooks/admin/useAdminAuth'
-import { CreateAdminUserSchema, type CreateAdminUserFormType } from '@/lib/schemas/adminUser.schema'
+import { AdminLoginSchema, type AdminLoginFormType } from '@/lib/schemas/adminUser.schema'
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { ADMIN_DASHBOARD } from '@/constants/routes'
@@ -22,12 +22,12 @@ export default function AdminLoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CreateAdminUserFormType>({
-    resolver: zodResolver(CreateAdminUserSchema),
+  } = useForm<AdminLoginFormType>({
+    resolver: zodResolver(AdminLoginSchema),
   })
 
-  const onSubmit = (data: CreateAdminUserFormType) => {
-    login({ email: data.email, password: data.password! })
+  const onSubmit = (data: AdminLoginFormType) => {
+    login({ username: data.username, password: data.password! })
   }
 
   return (
@@ -40,11 +40,11 @@ export default function AdminLoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            label="Email"
-            type="email"
-            placeholder="admin@example.com"
-            error={errors.email?.message}
-            {...register('email')}
+            label="Username"
+            type="text"
+            placeholder="admin"
+            error={errors.username?.message}
+            {...register('username')}
           />
           <Input
             label="Password"

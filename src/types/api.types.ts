@@ -19,8 +19,9 @@ export interface ApiError {
 export type AdminRole = 'super_admin' | 'maintainer' | 'viewer'
 
 export interface AuthTokens {
-  accessToken: string
-  refreshToken: string
+  token: string
+  refreshToken?: string
+  user: AdminUser
 }
 
 export interface AdminAuthResponse extends AuthTokens {
@@ -37,8 +38,9 @@ export interface AdminUser {
   username: string
   email: string
   role: AdminRole
-  isActive: boolean
-  createdAt: string
+  is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 // Inventory
