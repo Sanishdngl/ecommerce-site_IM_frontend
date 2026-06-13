@@ -26,9 +26,9 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
   ...initialState,
 
   login: (response: CustomerAuthResponse) => {
-    localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, response.refreshToken)
+    localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, response.token)
     set({
-      token: response.accessToken,
+      token: response.token,
       customer: response.customer,
     })
   },
