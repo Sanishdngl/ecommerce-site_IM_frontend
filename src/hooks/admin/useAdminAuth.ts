@@ -7,7 +7,7 @@ import { ADMIN_DASHBOARD } from '@/constants/routes'
 import type { AdminAuthResponse } from '@/types/api.types'
 
 interface LoginCredentials {
-  email: string
+  username: string
   password: string
 }
 

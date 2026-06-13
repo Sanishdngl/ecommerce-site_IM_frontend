@@ -5,7 +5,7 @@ import { Button } from './Button'
 interface Props {
   isOpen: boolean
   onClose: () => void
-  onConfirm: () => Promise<void> | void
+  onConfirm: () => unknown
   title: string
   message: string
   confirmLabel?: string

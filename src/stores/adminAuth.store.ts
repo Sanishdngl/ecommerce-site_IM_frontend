@@ -27,9 +27,11 @@ export const useAdminAuthStore = create<AdminAuthStore>()((set, get) => ({
   ...initialState,
 
   login: (response: AdminAuthResponse) => {
-    localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, response.refreshToken)
+    if (response.refreshToken) {
+      localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, response.refreshToken)
+    }
     set({
-      token: response.accessToken,
+      token: response.token,
       user: response.user,
       role: response.user.role,
     })
