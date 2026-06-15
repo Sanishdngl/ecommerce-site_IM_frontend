@@ -12,4 +12,5 @@ export const ProductSchema = z.object({
   image: z.instanceof(File).optional(),
 })
 
-export type ProductFormType = z.infer<typeof ProductSchema>
+export type ProductFormInput = z.input<typeof ProductSchema>
+export type ProductFormType = z.output<typeof ProductSchema>
