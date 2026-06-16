@@ -11,7 +11,8 @@ interface AdminAuthState {
 interface AdminAuthActions {
   login: (response: AdminAuthResponse) => void
   logout: () => void
-  setToken: (token: string) => void
+  setSession: (token: string, refreshToken: string, user: AdminUser) => void
+  setToken: (token: string, refreshToken?: string) => void
   isAuthenticated: () => boolean
 }
 
@@ -27,9 +28,7 @@ export const useAdminAuthStore = create<AdminAuthStore>()((set, get) => ({
   ...initialState,
 
   login: (response: AdminAuthResponse) => {
-    if (response.refreshToken) {
-      localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, response.refreshToken)
-    }
+    localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, response.refresh_token)
     set({
       token: response.token,
       user: response.user,
@@ -42,7 +41,15 @@ export const useAdminAuthStore = create<AdminAuthStore>()((set, get) => ({
     set(initialState)
   },
 
-  setToken: (token: string) => {
+  setSession: (token: string, refreshToken: string, user: AdminUser) => {
+    localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, refreshToken)
+    set({ token, user, role: user.role })
+  },
+
+  setToken: (token: string, refreshToken?: string) => {
+    if (refreshToken) {
+      localStorage.setItem(ADMIN_REFRESH_TOKEN_KEY, refreshToken)
+    }
     set({ token })
   },
 
