@@ -3,7 +3,7 @@ import toast from 'react-hot-toast'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
 import { LOGIN } from '@/constants/routes'
 import { CUSTOMER_REFRESH_TOKEN_KEY } from '@/constants/storage'
-import type { ApiError } from '@/types/api.types'
+import type { ApiError, Customer } from '@/types/api.types'
 
 export const customerApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -31,11 +31,8 @@ let pendingQueue: Array<{
 
 function processQueue(error: unknown, token: string | null) {
   pendingQueue.forEach(({ resolve, reject }) => {
-    if (error || !token) {
-      reject(error)
-    } else {
-      resolve(token)
-    }
+    if (error || !token) reject(error)
+    else resolve(token)
   })
   pendingQueue = []
 }
@@ -91,9 +88,10 @@ customerApi.interceptors.response.use(
         const { data } = await refreshClient.post<{
           token: string
           refresh_token: string
+          customer: Customer
         }>('/api/customer/auth/refresh', { refresh_token: refreshToken })
 
-        useCustomerAuthStore.getState().setToken(data.token, data.refresh_token)
+        useCustomerAuthStore.getState().setSession(data.token, data.refresh_token, data.customer)
 
         processQueue(null, data.token)
 

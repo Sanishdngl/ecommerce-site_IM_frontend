@@ -10,6 +10,7 @@ interface CustomerAuthState {
 interface CustomerAuthActions {
   login: (response: CustomerAuthResponse) => void
   logout: () => void
+  setSession: (token: string, refreshToken: string, customer: Customer) => void
   setToken: (token: string, refreshToken?: string) => void
   isAuthenticated: () => boolean
   mergePendingCart: () => Promise<void>
@@ -36,6 +37,11 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
   logout: () => {
     localStorage.removeItem(CUSTOMER_REFRESH_TOKEN_KEY)
     set(initialState)
+  },
+
+  setSession: (token: string, refreshToken: string, customer: Customer) => {
+    localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, refreshToken)
+    set({ token, customer })
   },
 
   setToken: (token: string, refreshToken?: string) => {
