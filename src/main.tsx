@@ -6,7 +6,7 @@ import { useCartStore } from '@/stores/cart.store'
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
 import { ADMIN_REFRESH_TOKEN_KEY, CUSTOMER_REFRESH_TOKEN_KEY } from '@/constants/storage'
-import type { AdminUser } from '@/types/api.types'
+import type { AdminUser, Customer } from '@/types/api.types'
 import './index.css'
 import App from './App'
 
@@ -51,13 +51,11 @@ async function restoreSession() {
         body: JSON.stringify({ refresh_token: customerRefresh }),
       })
       if (!res.ok) throw new Error('refresh failed')
-      const data = await res.json()
-      useCustomerAuthStore.getState().setToken(data.token, data.refresh_token)
-      if (data.customer) {
-        useCustomerAuthStore.setState({ customer: data.customer })
-      }
+      const data: { token: string; refresh_token: string; customer: Customer } = await res.json()
+      useCustomerAuthStore.getState().setSession(data.token, data.refresh_token, data.customer)
     } catch {
       localStorage.removeItem(CUSTOMER_REFRESH_TOKEN_KEY)
+      useCustomerAuthStore.getState().logout()
     }
   }
 }

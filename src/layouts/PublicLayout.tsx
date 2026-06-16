@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom'
+import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 
 export function PublicLayout() {
   return (
@@ -8,7 +9,9 @@ export function PublicLayout() {
       </header>
 
       <main className="flex-1">
-        <Outlet />
+        <ErrorBoundary>
+          <Outlet />
+        </ErrorBoundary>
       </main>
 
       <footer className="bg-gray-900 text-gray-400 py-8">
