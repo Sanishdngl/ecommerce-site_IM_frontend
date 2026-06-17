@@ -6,10 +6,7 @@ import { Skeleton } from '@/components/common/Skeleton'
 
 export default function HomePage() {
   const { data: categories, isLoading: categoriesLoading } = usePublicCategoryList()
-
-  const firstCategory = categories?.[0]
   const { data: featuredData, isLoading: productsLoading } = usePublicProductList({
-    categorySlug: firstCategory?.slug,
     limit: 8,
   })
 
@@ -37,18 +34,14 @@ export default function HomePage() {
         )}
       </section>
 
-      {firstCategory && (
-        <section>
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Featured in {firstCategory.name}
-          </h2>
-          <ProductGrid
-            products={featuredData?.data ?? []}
-            isLoading={productsLoading}
-            isEmpty={!productsLoading && (featuredData?.data.length ?? 0) === 0}
-          />
-        </section>
-      )}
+      <section>
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">Featured Products</h2>
+        <ProductGrid
+          products={featuredData?.data ?? []}
+          isLoading={productsLoading}
+          isEmpty={!productsLoading && (featuredData?.data.length ?? 0) === 0}
+        />
+      </section>
     </div>
   )
 }

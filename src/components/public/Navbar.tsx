@@ -4,6 +4,7 @@ import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
 import { usePublicCategoryList } from '@/hooks/inventory/useCategories'
 import { useCartStore } from '@/stores/cart.store'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
+import { useCartQuery } from '@/hooks/customer/useCart'
 import { Skeleton } from '@/components/common/Skeleton'
 import { HOME, PRODUCTS, LOGIN, CUSTOMER_PROFILE, CUSTOMER_CART } from '@/constants/routes'
 import { cn } from '@/utils/cn'
@@ -16,7 +17,8 @@ export function Navbar() {
   const customer = useCustomerAuthStore((s) => s.customer)
   const logout = useCustomerAuthStore((s) => s.logout)
 
-  const cartCount = guestCartCount
+  const { data: serverCart } = useCartQuery()
+  const cartCount = isAuthenticated ? (serverCart?.length ?? 0) : guestCartCount
 
   return (
     <div className="w-full">

@@ -151,25 +151,19 @@ export default function ProductsPage() {
         />
       </div>
 
-      {!categoryId ? (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center text-gray-500">
-          Select a category above to view its products.
-        </div>
-      ) : (
-        <Table
-          columns={columns}
-          data={data?.data ?? []}
-          isLoading={isLoading}
-          pagination={data?.pagination}
-          onPageChange={(p) => {
-            const params = new URLSearchParams(searchParams)
-            params.set('page', String(p))
-            setSearchParams(params)
-          }}
-          emptyTitle="No products found"
-          emptyDescription="Create your first product in this category"
-        />
-      )}
+      <Table
+        columns={columns}
+        data={data?.data ?? []}
+        isLoading={isLoading}
+        pagination={data?.pagination}
+        onPageChange={(p) => {
+          const params = new URLSearchParams(searchParams)
+          params.set('page', String(p))
+          setSearchParams(params)
+        }}
+        emptyTitle="No products found"
+        emptyDescription="Create your first product to get started"
+      />
 
       <ConfirmDialog
         isOpen={!!deleteTarget}
