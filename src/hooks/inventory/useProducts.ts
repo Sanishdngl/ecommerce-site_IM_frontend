@@ -35,7 +35,7 @@ export function useAdminProductList(params: Partial<ProductListParams> = {}) {
     queryFn: async () => {
       const { data } = await adminApi.get<ProductsListResponse>('/api/admin/inventory/products', {
         params: {
-          category_id: merged.categoryId,
+          category_id: merged.categoryId || undefined,
           page: merged.page,
           limit: merged.limit,
         },
@@ -50,7 +50,6 @@ export function useAdminProductList(params: Partial<ProductListParams> = {}) {
         },
       }
     },
-    enabled: !!merged.categoryId,
     placeholderData: (prev) => prev,
   })
 }
@@ -69,7 +68,7 @@ export function usePublicProductList(
     queryFn: async () => {
       const { data } = await customerApi.get<ProductsListResponse>('/api/products', {
         params: {
-          category: params.categorySlug,
+          category: params.categorySlug || undefined,
           page: params.page ?? DEFAULT_PAGE,
           limit: params.limit ?? DEFAULT_LIMIT,
         },
@@ -84,7 +83,6 @@ export function usePublicProductList(
         },
       }
     },
-    enabled: !!params.categorySlug,
   })
 }
 
@@ -172,9 +170,22 @@ export function useAdjustStock(productId: string) {
       )
       return data
     },
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: queryKeys.products.detail(productId) })
-      qc.invalidateQueries({ queryKey: queryKeys.products.all })
+    onSuccess: (data) => {
+      qc.setQueryData<Product>(queryKeys.products.detail(productId), (old) =>
+        old ? { ...old, stock_quantity: data.stock_quantity } : old
+      )
+      qc.setQueriesData<{ data: Product[]; pagination: unknown } | undefined>(
+        { queryKey: queryKeys.products.all },
+        (old) => {
+          if (!old) return old
+          return {
+            ...old,
+            data: old.data.map((p) =>
+              p.id === productId ? { ...p, stock_quantity: data.stock_quantity } : p
+            ),
+          }
+        }
+      )
       toast.success('Stock updated successfully')
     },
   })

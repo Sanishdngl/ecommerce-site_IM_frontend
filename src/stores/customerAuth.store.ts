@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import type { Customer, CustomerAuthResponse } from '@/types/api.types'
 import { CUSTOMER_REFRESH_TOKEN_KEY } from '@/constants/storage'
+import { useCartStore } from './cart.store'
+import { customerApi } from '@/lib/customerApi'
+import type { CartResponse } from '@/types/api.types'
 
 interface CustomerAuthState {
   token: string | null
@@ -56,6 +59,19 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
   },
 
   mergePendingCart: async () => {
-    console.warn('[customerAuth] mergePendingCart: not yet implemented (Phase 15)')
+    const guestItems = useCartStore.getState().items
+    if (guestItems.length === 0) return
+
+    try {
+      for (const item of guestItems) {
+        await customerApi.post<CartResponse>('/api/customer/cart', {
+          product_id: item.productId,
+          quantity: item.quantity,
+        })
+      }
+      useCartStore.getState().clearCart()
+    } catch {
+      console.error('[customerAuth] Failed to merge guest cart')
+    }
   },
 }))

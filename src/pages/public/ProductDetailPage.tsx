@@ -5,21 +5,27 @@ import toast from 'react-hot-toast'
 import { usePublicProductDetail, usePublicProductList } from '@/hooks/inventory/useProducts'
 import { useCartStore } from '@/stores/cart.store'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
+import { useAddToCart } from '@/hooks/customer/useCart'
 import { Skeleton } from '@/components/common/Skeleton'
 import { Button } from '@/components/common/Button'
 import { ProductGrid } from '@/components/public/ProductGrid'
 import { formatCurrency } from '@/utils/formatCurrency'
+import { usePublicCategoryList } from '@/hooks/inventory/useCategories'
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { data: product, isLoading } = usePublicProductDetail(id!)
   const [quantity, setQuantity] = useState(1)
 
+  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart()
   const addGuestItem = useCartStore((s) => s.addItem)
   const isAuthenticated = useCustomerAuthStore((s) => s.isAuthenticated())
 
+  const { data: categories } = usePublicCategoryList()
+  const categorySlug = categories?.find((c) => c.id === product?.category_id)?.slug
+
   const { data: relatedData } = usePublicProductList({
-    categorySlug: product?.category_id,
+    categorySlug,
     limit: 4,
   })
 
@@ -43,7 +49,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (isAuthenticated) {
-      toast.success(`Added ${quantity} to cart`)
+      addToCart({ product_id: product.id, quantity })
       return
     }
     addGuestItem({
@@ -109,8 +115,7 @@ export default function ProductDetailPage() {
                   <Plus size={14} />
                 </button>
               </div>
-
-              <Button onClick={handleAddToCart} className="flex-1">
+              <Button onClick={handleAddToCart} loading={isAddingToCart} className="flex-1">
                 Add to Cart
               </Button>
             </div>

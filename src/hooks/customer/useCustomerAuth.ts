@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { customerApi } from '@/lib/customerApi'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
-import { CUSTOMER_PROFILE } from '@/constants/routes'
+import { HOME } from '@/constants/routes'
 import type { CustomerAuthResponse } from '@/types/api.types'
 
 interface RegisterPayload {
@@ -40,7 +40,7 @@ export function useRegister() {
       login(data)
       await mergePendingCart()
       toast.success(`Welcome, ${data.customer.first_name}!`)
-      navigate(CUSTOMER_PROFILE, { replace: true })
+      navigate(HOME, { replace: true })
     },
   })
 }
@@ -64,7 +64,7 @@ export function useLogin() {
       await mergePendingCart()
       toast.success(`Welcome back, ${data.customer.first_name}!`)
       const from = (location.state as { from?: Location })?.from?.pathname
-      navigate(from ?? CUSTOMER_PROFILE, { replace: true })
+      navigate(from ?? HOME, { replace: true })
     },
   })
 }

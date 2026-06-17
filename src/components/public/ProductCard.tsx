@@ -4,6 +4,7 @@ import { productDetail } from '@/constants/routes'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { useCartStore } from '@/stores/cart.store'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
+import { useAddToCart } from '@/hooks/customer/useCart'
 import { Button } from '@/components/common/Button'
 import toast from 'react-hot-toast'
 import type { Product } from '@/types/api.types'
@@ -15,13 +16,14 @@ interface Props {
 export function ProductCard({ product }: Props) {
   const addGuestItem = useCartStore((s) => s.addItem)
   const isAuthenticated = useCustomerAuthStore((s) => s.isAuthenticated())
+  const { mutate: addToCart, isPending } = useAddToCart()
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
     if (isAuthenticated) {
-      toast.success('Added to cart')
+      addToCart({ product_id: product.id, quantity: 1 })
       return
     }
 
@@ -61,6 +63,7 @@ export function ProductCard({ product }: Props) {
           size="sm"
           variant="secondary"
           onClick={handleAddToCart}
+          loading={isPending}
           className="mt-auto w-full"
           disabled={product.stock_quantity === 0}
         >

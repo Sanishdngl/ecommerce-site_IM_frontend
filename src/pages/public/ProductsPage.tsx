@@ -17,7 +17,10 @@ export default function ProductsPage() {
     limit: 12,
   })
 
-  const categoryOptions = (categories ?? []).map((c) => ({ value: c.slug, label: c.name }))
+  const categoryOptions = (categories ?? []).map((c) => ({
+    value: c.slug,
+    label: c.name,
+  }))
 
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams)
@@ -50,21 +53,14 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      {!categoryId ? (
-        <div className="rounded-xl border border-gray-200 p-12 text-center text-gray-500">
-          Select a category to browse products.
-        </div>
-      ) : (
-        <>
-          <ProductGrid
-            products={data?.data ?? []}
-            isLoading={isLoading}
-            isEmpty={!isLoading && (data?.data.length ?? 0) === 0}
-          />
-          {data?.pagination && (
-            <Pagination pagination={data.pagination} onPageChange={handlePageChange} />
-          )}
-        </>
+      <ProductGrid
+        products={data?.data ?? []}
+        isLoading={isLoading}
+        isEmpty={!isLoading && (data?.data.length ?? 0) === 0}
+      />
+
+      {data?.pagination && (
+        <Pagination pagination={data.pagination} onPageChange={handlePageChange} />
       )}
     </div>
   )
