@@ -3,6 +3,7 @@ import { useCreateCategory } from '@/hooks/inventory/useCategories'
 import { CategoryForm } from '@/components/admin/CategoryForm'
 import { ADMIN_CATEGORIES } from '@/constants/routes'
 import type { CategoryFormType } from '@/lib/schemas/category.schema'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function CreateCategoryPage() {
   const navigate = useNavigate()
@@ -13,6 +14,8 @@ export default function CreateCategoryPage() {
       onSuccess: () => navigate(ADMIN_CATEGORIES),
     })
   }
+
+  useDocumentTitle('Create Category')
 
   return (
     <div className="max-w-lg space-y-6">

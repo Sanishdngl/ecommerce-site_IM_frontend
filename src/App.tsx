@@ -6,9 +6,9 @@ import { CustomerLayout } from '@/layouts/CustomerLayout'
 import { AdminRoute } from '@/components/guards/AdminRoute'
 import { CustomerRoute } from '@/components/guards/CustomerRoute'
 import { RoleRoute } from '@/components/guards/RoleRoute'
+import { ErrorBoundary } from '@/components/common/ErrorBoundary'
 import * as R from '@/constants/routes'
 
-// Admin pages
 const AdminLoginPage = lazy(() => import('@/pages/admin/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage'))
 const UsersPage = lazy(() => import('@/pages/admin/users/UsersPage'))
@@ -22,7 +22,6 @@ const CreateProductPage = lazy(() => import('@/pages/admin/inventory/CreateProdu
 const EditProductPage = lazy(() => import('@/pages/admin/inventory/EditProductPage'))
 const BulkUploadPage = lazy(() => import('@/pages/admin/inventory/BulkUploadPage'))
 
-// Public pages
 const HomePage = lazy(() => import('@/pages/public/HomePage'))
 const PublicProductsPage = lazy(() => import('@/pages/public/ProductsPage'))
 const ProductDetailPage = lazy(() => import('@/pages/public/ProductDetailPage'))
@@ -31,7 +30,6 @@ const RegisterPage = lazy(() => import('@/pages/public/RegisterPage'))
 const OAuthCallbackPage = lazy(() => import('@/pages/public/OAuthCallbackPage'))
 const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage'))
 
-// Customer pages
 const ProfilePage = lazy(() => import('@/pages/public/customer/ProfilePage'))
 const CartPage = lazy(() => import('@/pages/public/customer/CartPage'))
 
@@ -52,7 +50,9 @@ export default function App() {
             path="/admin"
             element={
               <AdminRoute>
-                <AdminLayout />
+                <ErrorBoundary>
+                  <AdminLayout />
+                </ErrorBoundary>
               </AdminRoute>
             }
           >

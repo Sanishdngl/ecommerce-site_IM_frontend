@@ -4,6 +4,7 @@ import { CategoryForm } from '@/components/admin/CategoryForm'
 import { Skeleton } from '@/components/common/Skeleton'
 import { ADMIN_CATEGORIES } from '@/constants/routes'
 import type { CategoryFormType } from '@/lib/schemas/category.schema'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function EditCategoryPage() {
   const { id } = useParams<{ id: string }>()
@@ -16,6 +17,8 @@ export default function EditCategoryPage() {
       onSuccess: () => navigate(ADMIN_CATEGORIES),
     })
   }
+
+  useDocumentTitle('Edit Category')
 
   if (isLoading) {
     return (

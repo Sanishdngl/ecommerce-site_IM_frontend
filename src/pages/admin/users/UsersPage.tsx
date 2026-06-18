@@ -14,6 +14,8 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { formatDate } from '@/utils/formatDate'
 import { adminUsersEdit, ADMIN_USERS_NEW } from '@/constants/routes'
 import type { AdminUser } from '@/types/api.types'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+
 
 export default function UsersPage() {
   const navigate = useNavigate()
@@ -83,6 +85,8 @@ export default function UsersPage() {
       ),
     },
   ]
+
+  useDocumentTitle("Admin User");
 
   return (
     <div className="space-y-6">

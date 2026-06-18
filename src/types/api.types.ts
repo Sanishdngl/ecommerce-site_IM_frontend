@@ -22,7 +22,7 @@ export interface PaginatedResponse<T> {
 }
 
 // Auth
-export type AdminRole = 'super_admin' | 'maintainer' | 'viewer'
+export type AdminRole = 'super_admin' | 'maintainer' | 'reporter'
 
 export interface AdminAuthResponse {
   token: string
@@ -52,7 +52,7 @@ export interface Category {
   id: string
   name: string
   slug: string
-  createdAt: string
+  created_at: string
   updated_at: string
 }
 

@@ -13,6 +13,7 @@ import { StockUpdateModal } from '@/components/admin/StockUpdateModal'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { ADMIN_PRODUCTS_NEW, adminProductsEdit } from '@/constants/routes'
 import type { Product } from '@/types/api.types'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 const LOW_STOCK_THRESHOLD = 10
 
@@ -127,6 +128,8 @@ export default function ProductsPage() {
       ),
     },
   ]
+
+  useDocumentTitle('Products')
 
   return (
     <div className="space-y-6">

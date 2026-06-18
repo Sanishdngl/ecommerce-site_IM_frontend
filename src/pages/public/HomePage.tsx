@@ -3,12 +3,15 @@ import { usePublicProductList } from '@/hooks/inventory/useProducts'
 import { CategoryCard } from '@/components/public/CategoryCard'
 import { ProductGrid } from '@/components/public/ProductGrid'
 import { Skeleton } from '@/components/common/Skeleton'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function HomePage() {
   const { data: categories, isLoading: categoriesLoading } = usePublicCategoryList()
   const { data: featuredData, isLoading: productsLoading } = usePublicProductList({
     limit: 8,
   })
+
+  useDocumentTitle('Home')
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">

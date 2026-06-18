@@ -1,7 +1,9 @@
 import { Download } from 'lucide-react'
 import { BulkUploadForm } from '@/components/admin/BulkUploadForm'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function BulkUploadPage() {
+  useDocumentTitle('Bulk Upload')
   return (
     <div className="max-w-xl space-y-6">
       <div>

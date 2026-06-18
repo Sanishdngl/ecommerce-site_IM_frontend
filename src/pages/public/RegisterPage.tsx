@@ -5,6 +5,7 @@ import { useRegister } from '@/hooks/customer/useCustomerAuth'
 import { AuthForm } from '@/components/public/AuthForm'
 import { CUSTOMER_PROFILE } from '@/constants/routes'
 import type { RegisterFormType } from '@/lib/schemas/customerAuth.schema'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
@@ -23,6 +24,8 @@ export default function RegisterPage() {
       last_name: data.last_name,
     })
   }
+
+  useDocumentTitle('Create Account')
 
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">

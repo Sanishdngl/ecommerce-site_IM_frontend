@@ -9,6 +9,7 @@ import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { formatDate } from '@/utils/formatDate'
 import { ADMIN_CATEGORIES_NEW, adminCategoriesEdit } from '@/constants/routes'
 import type { Category } from '@/types/api.types'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function CategoriesPage() {
   const navigate = useNavigate()
@@ -55,6 +56,9 @@ export default function CategoriesPage() {
       ),
     },
   ]
+
+  useDocumentTitle('Categories')
+
 
   return (
     <div className="space-y-6">

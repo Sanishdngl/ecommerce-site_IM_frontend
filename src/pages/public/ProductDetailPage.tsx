@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { EmptyState } from '@/components/common/EmptyState'
+import { PRODUCTS } from '@/constants/routes'
 import { ImageOff, Minus, Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { usePublicProductDetail, usePublicProductList } from '@/hooks/inventory/useProducts'
@@ -11,10 +13,12 @@ import { Button } from '@/components/common/Button'
 import { ProductGrid } from '@/components/public/ProductGrid'
 import { formatCurrency } from '@/utils/formatCurrency'
 import { usePublicCategoryList } from '@/hooks/inventory/useCategories'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>()
   const { data: product, isLoading } = usePublicProductDetail(id!)
+  const navigate = useNavigate()
   const [quantity, setQuantity] = useState(1)
 
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart()
@@ -29,6 +33,8 @@ export default function ProductDetailPage() {
     limit: 4,
   })
 
+  useDocumentTitle(product?.name ?? 'Product')
+
   if (isLoading) {
     return (
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
@@ -39,8 +45,12 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16 text-center text-gray-500">
-        Product not found.
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-16">
+        <EmptyState
+          title="Product not found"
+          description="This product may have been removed or is no longer available"
+          action={{ label: 'Browse Products', onClick: () => navigate(PRODUCTS) }}
+        />
       </div>
     )
   }

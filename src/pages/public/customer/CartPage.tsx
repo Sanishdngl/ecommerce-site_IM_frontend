@@ -5,10 +5,13 @@ import { Skeleton } from '@/components/common/Skeleton'
 import { EmptyState } from '@/components/common/EmptyState'
 import { useNavigate } from 'react-router-dom'
 import { PRODUCTS } from '@/constants/routes'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function CartPage() {
   const navigate = useNavigate()
   const { data: items, isLoading } = useCartQuery()
+
+  useDocumentTitle('Your Cart')
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">

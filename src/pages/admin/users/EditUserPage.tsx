@@ -4,6 +4,7 @@ import { AdminUserForm } from '@/components/admin/AdminUserForm'
 import { Skeleton } from '@/components/common/Skeleton'
 import { ADMIN_USERS } from '@/constants/routes'
 import type { AdminUserFormType } from '@/lib/schemas/adminUser.schema'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function EditUserPage() {
   const { id } = useParams<{ id: string }>()
@@ -23,6 +24,8 @@ export default function EditUserPage() {
       onSuccess: () => navigate(ADMIN_USERS),
     })
   }
+
+  useDocumentTitle('Edit Admin User')
 
   if (isLoading) {
     return (
