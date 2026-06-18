@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCreateProduct } from '@/hooks/inventory/useProducts'
 import { ProductForm } from '@/components/admin/ProductForm'
 import { ADMIN_PRODUCTS } from '@/constants/routes'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function CreateProductPage() {
   const navigate = useNavigate()
@@ -12,6 +13,8 @@ export default function CreateProductPage() {
       onSuccess: () => navigate(ADMIN_PRODUCTS),
     })
   }
+
+  useDocumentTitle('Create Product')
 
   return (
     <div className="max-w-lg space-y-6">

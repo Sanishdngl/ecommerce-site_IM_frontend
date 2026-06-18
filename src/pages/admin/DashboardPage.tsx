@@ -1,5 +1,6 @@
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
 import { Package, Tag, Users, TrendingUp } from 'lucide-react'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 const stats = [
   { label: 'Total Products', value: '—', icon: <Package className="w-6 h-6 text-primary-600" /> },
@@ -10,6 +11,8 @@ const stats = [
 
 export default function DashboardPage() {
   const user = useAdminAuthStore((s) => s.user)
+
+  useDocumentTitle('Dashboard')
 
   return (
     <div className="space-y-6">

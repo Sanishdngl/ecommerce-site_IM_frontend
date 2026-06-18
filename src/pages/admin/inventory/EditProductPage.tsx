@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/common/Skeleton'
 import { Button } from '@/components/common/Button'
 import { PackagePlus } from 'lucide-react'
 import { ADMIN_PRODUCTS } from '@/constants/routes'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function EditProductPage() {
   const { id } = useParams<{ id: string }>()
@@ -20,6 +21,8 @@ export default function EditProductPage() {
       onSuccess: () => navigate(ADMIN_PRODUCTS),
     })
   }
+
+  useDocumentTitle('Edit Product')
 
   if (isLoading) {
     return (

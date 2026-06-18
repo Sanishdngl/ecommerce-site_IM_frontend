@@ -8,11 +8,14 @@ import { AdminLoginSchema, type AdminLoginFormType } from '@/lib/schemas/adminUs
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { ADMIN_DASHBOARD } from '@/constants/routes'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function AdminLoginPage() {
   const navigate = useNavigate()
   const isAuthenticated = useAdminAuthStore((s) => s.isAuthenticated())
   const { mutate: login, isPending } = useAdminLogin()
+
+  useDocumentTitle('Admin Login')
 
   useEffect(() => {
     if (isAuthenticated) navigate(ADMIN_DASHBOARD, { replace: true })

@@ -6,6 +6,7 @@ import { ProfileSchema, type ProfileFormType } from '@/lib/schemas/profile.schem
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { Skeleton } from '@/components/common/Skeleton'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function ProfilePage() {
   const { data: customer, isLoading } = useProfileQuery()
@@ -32,6 +33,8 @@ export default function ProfilePage() {
   const onSubmit = (data: ProfileFormType) => {
     updateProfile(data)
   }
+
+  useDocumentTitle('Your Profile')
 
   if (isLoading) {
     return (

@@ -3,6 +3,7 @@ import { useCreateAdminUser } from '@/hooks/admin/useAdminUsers'
 import { AdminUserForm } from '@/components/admin/AdminUserForm'
 import { ADMIN_USERS } from '@/constants/routes'
 import type { AdminUserFormType } from '@/lib/schemas/adminUser.schema'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function CreateUserPage() {
   const navigate = useNavigate()
@@ -21,6 +22,8 @@ export default function CreateUserPage() {
       }
     )
   }
+
+  useDocumentTitle('Create Admin User')
 
   return (
     <div className="max-w-lg space-y-6">

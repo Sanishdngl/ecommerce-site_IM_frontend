@@ -4,6 +4,7 @@ import { useOAuth } from '@/hooks/customer/useCustomerAuth'
 import { Spinner } from '@/components/common/Spinner'
 import { CUSTOMER_PROFILE, LOGIN } from '@/constants/routes'
 import { OAUTH_RETURN_TO_KEY } from '@/constants/storage'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function OAuthCallbackPage() {
   const navigate = useNavigate()
@@ -36,6 +37,8 @@ export default function OAuthCallbackPage() {
       }
     )
   }, [searchParams, oauthLogin, navigate])
+
+  useDocumentTitle('Signing In')
 
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-4">

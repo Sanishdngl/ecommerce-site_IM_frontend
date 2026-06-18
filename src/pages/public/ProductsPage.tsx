@@ -4,6 +4,7 @@ import { usePublicProductList } from '@/hooks/inventory/useProducts'
 import { ProductGrid } from '@/components/public/ProductGrid'
 import { Select } from '@/components/common/Select'
 import { Pagination } from '@/components/common/Pagination'
+import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function ProductsPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -38,6 +39,8 @@ export default function ProductsPage() {
     params.set('page', String(p))
     setSearchParams(params)
   }
+
+  useDocumentTitle('Shop')
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
