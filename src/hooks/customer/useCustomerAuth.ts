@@ -3,7 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { customerApi } from '@/lib/customerApi'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
-import { HOME } from '@/constants/routes'
+import { HOME, LOGIN } from '@/constants/routes'
+import { getDeviceId, getDevicePixelRatio } from '@/lib/deviceId'
 import type { CustomerAuthResponse } from '@/types/api.types'
 
 interface RegisterPayload {
@@ -30,10 +31,11 @@ export function useRegister() {
 
   return useMutation({
     mutationFn: async (payload: RegisterPayload) => {
-      const { data } = await customerApi.post<CustomerAuthResponse>(
-        '/api/customer/auth/register',
-        payload
-      )
+      const { data } = await customerApi.post<CustomerAuthResponse>('/api/customer/auth/register', {
+        ...payload,
+        device_id: getDeviceId(),
+        device_pixel_ratio: getDevicePixelRatio(),
+      })
       return data
     },
     onSuccess: async (data) => {
@@ -53,10 +55,11 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: async (payload: LoginPayload) => {
-      const { data } = await customerApi.post<CustomerAuthResponse>(
-        '/api/customer/auth/login',
-        payload
-      )
+      const { data } = await customerApi.post<CustomerAuthResponse>('/api/customer/auth/login', {
+        ...payload,
+        device_id: getDeviceId(),
+        device_pixel_ratio: getDevicePixelRatio(),
+      })
       return data
     },
     onSuccess: async (data) => {
@@ -75,15 +78,35 @@ export function useOAuth() {
 
   return useMutation({
     mutationFn: async (payload: OAuthPayload) => {
-      const { data } = await customerApi.post<CustomerAuthResponse>(
-        '/api/customer/auth/oauth',
-        payload
-      )
+      const { data } = await customerApi.post<CustomerAuthResponse>('/api/customer/auth/oauth', {
+        ...payload,
+        device_id: getDeviceId(),
+        device_pixel_ratio: getDevicePixelRatio(),
+      })
       return data
     },
     onSuccess: async (data) => {
       login(data)
       await mergePendingCart()
+    },
+  })
+}
+
+export function useCustomerLogout() {
+  const navigate = useNavigate()
+  const logout = useCustomerAuthStore((s) => s.logout)
+
+  return useMutation({
+    mutationFn: async () => {
+      await customerApi.post('/api/customer/auth/logout')
+    },
+    onSuccess: () => {
+      logout()
+      navigate(LOGIN, { replace: true })
+    },
+    onError: () => {
+      logout()
+      navigate(LOGIN, { replace: true })
     },
   })
 }

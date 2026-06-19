@@ -4,6 +4,7 @@ import { ShoppingCart, Menu, X, User, LogOut } from 'lucide-react'
 import { usePublicCategoryList } from '@/hooks/inventory/useCategories'
 import { useCartStore } from '@/stores/cart.store'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
+import { useCustomerLogout } from '@/hooks/customer/useCustomerAuth'
 import { useCartQuery } from '@/hooks/customer/useCart'
 import { Skeleton } from '@/components/common/Skeleton'
 import { HOME, PRODUCTS, LOGIN, CUSTOMER_PROFILE, CUSTOMER_CART } from '@/constants/routes'
@@ -15,7 +16,7 @@ export function Navbar() {
   const guestCartCount = useCartStore((s) => s.items.length)
   const isAuthenticated = useCustomerAuthStore((s) => s.isAuthenticated())
   const customer = useCustomerAuthStore((s) => s.customer)
-  const logout = useCustomerAuthStore((s) => s.logout)
+  const { mutate: logoutCustomer } = useCustomerLogout()
 
   const { data: serverCart } = useCartQuery()
   const cartCount = isAuthenticated ? (serverCart?.length ?? 0) : guestCartCount
@@ -71,7 +72,7 @@ export function Navbar() {
                 {customer?.first_name ?? 'Profile'}
               </Link>
               <button
-                onClick={logout}
+                onClick={() => logoutCustomer()}
                 className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
               >
                 <LogOut size={14} />
@@ -123,7 +124,7 @@ export function Navbar() {
                 </Link>
                 <button
                   onClick={() => {
-                    logout()
+                    logoutCustomer()
                     setMobileOpen(false)
                   }}
                   className="block text-sm text-gray-500 py-1.5"

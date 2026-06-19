@@ -2,17 +2,18 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import toast from 'react-hot-toast'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
 import { LOGIN } from '@/constants/routes'
-import { CUSTOMER_REFRESH_TOKEN_KEY } from '@/constants/storage'
 import type { ApiError, Customer } from '@/types/api.types'
 
 export const customerApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
 
 const refreshClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
 
 customerApi.interceptors.request.use((config) => {
@@ -62,12 +63,6 @@ customerApi.interceptors.response.use(
         return Promise.reject(error)
       }
 
-      const refreshToken = localStorage.getItem(CUSTOMER_REFRESH_TOKEN_KEY)
-      if (!refreshToken) {
-        redirectToLogin()
-        return Promise.reject(error)
-      }
-
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingQueue.push({
@@ -89,9 +84,9 @@ customerApi.interceptors.response.use(
           token: string
           refresh_token: string
           customer: Customer
-        }>('/api/customer/auth/refresh', { refresh_token: refreshToken })
+        }>('/api/customer/auth/refresh')
 
-        useCustomerAuthStore.getState().setSession(data.token, data.refresh_token, data.customer)
+        useCustomerAuthStore.getState().setSession(data.token, data.customer)
 
         processQueue(null, data.token)
 
