@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import type { Customer, CustomerAuthResponse } from '@/types/api.types'
-import { CUSTOMER_REFRESH_TOKEN_KEY } from '@/constants/storage'
 import { useCartStore } from './cart.store'
 import { customerApi } from '@/lib/customerApi'
 import type { CartResponse } from '@/types/api.types'
@@ -13,8 +12,8 @@ interface CustomerAuthState {
 interface CustomerAuthActions {
   login: (response: CustomerAuthResponse) => void
   logout: () => void
-  setSession: (token: string, refreshToken: string, customer: Customer) => void
-  setToken: (token: string, refreshToken?: string) => void
+  setSession: (token: string, customer: Customer) => void
+  setToken: (token: string) => void
   isAuthenticated: () => boolean
   mergePendingCart: () => Promise<void>
 }
@@ -30,7 +29,6 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
   ...initialState,
 
   login: (response: CustomerAuthResponse) => {
-    localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, response.refresh_token)
     set({
       token: response.token,
       customer: response.customer,
@@ -38,19 +36,14 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
   },
 
   logout: () => {
-    localStorage.removeItem(CUSTOMER_REFRESH_TOKEN_KEY)
     set(initialState)
   },
 
-  setSession: (token: string, refreshToken: string, customer: Customer) => {
-    localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, refreshToken)
+  setSession: (token: string, customer: Customer) => {
     set({ token, customer })
   },
 
-  setToken: (token: string, refreshToken?: string) => {
-    if (refreshToken) {
-      localStorage.setItem(CUSTOMER_REFRESH_TOKEN_KEY, refreshToken)
-    }
+  setToken: (token: string) => {
     set({ token })
   },
 

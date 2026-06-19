@@ -2,17 +2,18 @@ import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import toast from 'react-hot-toast'
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
 import { ADMIN_LOGIN } from '@/constants/routes'
-import { ADMIN_REFRESH_TOKEN_KEY } from '@/constants/storage'
 import type { ApiError, AdminUser } from '@/types/api.types'
 
 export const adminApi = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
 
 const refreshClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 })
 
 adminApi.interceptors.request.use((config) => {
@@ -57,13 +58,6 @@ adminApi.interceptors.response.use(
     }
 
     if (status === 401 && originalRequest && !originalRequest._retry) {
-      const refreshToken = localStorage.getItem(ADMIN_REFRESH_TOKEN_KEY)
-
-      if (!refreshToken) {
-        redirectToLogin()
-        return Promise.reject(error)
-      }
-
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingQueue.push({
@@ -83,11 +77,10 @@ adminApi.interceptors.response.use(
       try {
         const { data } = await refreshClient.post<{
           token: string
-          refresh_token: string
           user: AdminUser
-        }>('/api/admin/auth/refresh', { refresh_token: refreshToken })
+        }>('/api/admin/auth/refresh')
 
-        useAdminAuthStore.getState().setSession(data.token, data.refresh_token, data.user)
+        useAdminAuthStore.getState().setSession(data.token, data.user)
 
         processQueue(null, data.token)
 

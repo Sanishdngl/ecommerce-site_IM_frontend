@@ -26,13 +26,11 @@ export type AdminRole = 'super_admin' | 'maintainer' | 'reporter'
 
 export interface AdminAuthResponse {
   token: string
-  refresh_token: string
   user: AdminUser
 }
 
 export interface CustomerAuthResponse {
   token: string
-  refresh_token: string
   customer: Customer
 }
 
