@@ -45,6 +45,8 @@ export function AdminUserForm({ mode, defaultValues, onSubmit, isPending }: Prop
         label="Username"
         placeholder="johndoe"
         error={errors.username?.message}
+        labelClassName="text-graphite/70"
+        className="focus:ring-signal focus:border-signal"
         {...register('username')}
       />
       <Input
@@ -52,6 +54,8 @@ export function AdminUserForm({ mode, defaultValues, onSubmit, isPending }: Prop
         type="email"
         placeholder="john@example.com"
         error={errors.email?.message}
+        labelClassName="text-graphite/70"
+        className="focus:ring-signal focus:border-signal"
         {...register('email')}
       />
       <Input
@@ -59,16 +63,19 @@ export function AdminUserForm({ mode, defaultValues, onSubmit, isPending }: Prop
         type="password"
         placeholder="••••••••"
         error={errors.password?.message}
+        labelClassName="text-graphite/70"
+        className="focus:ring-signal focus:border-signal"
         {...register('password')}
       />
       <Select
         label="Role"
         options={roleOptions}
         error={errors.role?.message}
+        className="focus:ring-signal focus:border-signal"
         {...register('role')}
       />
       <div className="pt-2">
-        <Button type="submit" className="w-full" loading={isPending}>
+        <Button type="submit" variant="signal" className="w-full" loading={isPending}>
           {mode === 'create' ? 'Create User' : 'Save Changes'}
         </Button>
       </div>

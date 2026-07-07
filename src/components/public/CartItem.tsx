@@ -8,11 +8,12 @@ import type { CartItem as CartItemType } from '@/types/api.types'
 
 interface Props {
   item: CartItemType
+  line: number
 }
 
 const DEBOUNCE_MS = 300
 
-export function CartItem({ item }: Props) {
+export function CartItem({ item, line }: Props) {
   const [quantity, setQuantity] = useState(item.quantity)
   const [lastSynced, setLastSynced] = useState(item.quantity)
 
@@ -52,14 +53,18 @@ export function CartItem({ item }: Props) {
   const isPending = isUpdating || isRemoving
 
   return (
-    <div className="flex items-center gap-4 py-4 border-b border-gray-100 relative">
+    <div className="flex items-center gap-4 py-4 relative">
       {isPending && (
-        <div className="absolute inset-0 bg-white/60 flex items-center justify-center z-10">
+        <div className="absolute inset-0 bg-paper/70 flex items-center justify-center z-10">
           <Spinner size="sm" />
         </div>
       )}
 
-      <div className="w-16 h-16 rounded-lg bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+      <span className="font-stamp text-xs text-ink/35 w-5 shrink-0">
+        {String(line).padStart(2, '0')}
+      </span>
+
+      <div className="w-16 h-16 bg-kraft/30 flex items-center justify-center overflow-hidden shrink-0">
         {item.thumbnail_url ? (
           <img
             src={item.thumbnail_url}
@@ -67,27 +72,27 @@ export function CartItem({ item }: Props) {
             className="w-full h-full object-cover"
           />
         ) : (
-          <ImageOff className="w-6 h-6 text-gray-300" />
+          <ImageOff className="w-6 h-6 text-ink/20" />
         )}
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 truncate">{item.product_name}</p>
-        <p className="text-sm text-gray-500">{formatCurrency(Number(item.price))} each</p>
+        <p className="text-sm font-medium text-ink truncate">{item.product_name}</p>
+        <p className="font-stamp text-xs text-ink/50">{formatCurrency(Number(item.price))} each</p>
       </div>
 
-      <div className="flex items-center border border-gray-300 rounded-md">
+      <div className="flex items-center border border-ink/25">
         <button
           onClick={handleDecrement}
-          className="p-1.5 hover:bg-gray-50"
+          className="p-1.5 hover:bg-kraft/30 text-ink"
           aria-label="Decrease quantity"
         >
           <Minus size={14} />
         </button>
-        <span className="w-8 text-center text-sm">{quantity}</span>
+        <span className="w-8 text-center text-sm font-stamp text-ink">{quantity}</span>
         <button
           onClick={handleIncrement}
-          className="p-1.5 hover:bg-gray-50"
+          className="p-1.5 hover:bg-kraft/30 text-ink"
           aria-label="Increase quantity"
           disabled={quantity >= item.stock_quantity}
         >
@@ -95,13 +100,13 @@ export function CartItem({ item }: Props) {
         </button>
       </div>
 
-      <p className="w-20 text-right text-sm font-semibold text-gray-900">
+      <p className="w-20 text-right font-stamp text-sm text-ink">
         {formatCurrency(Number(item.price) * quantity)}
       </p>
 
       <button
         onClick={() => setConfirmRemove(true)}
-        className="p-1.5 text-gray-400 hover:text-red-600 transition-colors"
+        className="p-1.5 text-ink/40 hover:text-stamp transition-colors"
         aria-label="Remove item"
       >
         <Trash2 size={16} />
@@ -111,7 +116,7 @@ export function CartItem({ item }: Props) {
         isOpen={confirmRemove}
         onClose={() => setConfirmRemove(false)}
         onConfirm={() => removeItem(item.product_id)}
-        title="Remove Item"
+        title="Remove item"
         message={`Remove "${item.product_name}" from your cart?`}
         confirmLabel="Remove"
       />

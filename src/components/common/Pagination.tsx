@@ -5,9 +5,10 @@ import type { PaginatedResponse } from '@/types/api.types'
 interface Props {
   pagination: PaginatedResponse<unknown>['pagination']
   onPageChange: (page: number) => void
+  accentClassName?: string
 }
 
-export function Pagination({ pagination, onPageChange }: Props) {
+export function Pagination({ pagination, onPageChange, accentClassName }: Props) {
   const { page, totalPages } = pagination
 
   if (totalPages <= 1) return null
@@ -46,7 +47,9 @@ export function Pagination({ pagination, onPageChange }: Props) {
             onClick={() => onPageChange(item)}
             className={cn(
               'w-8 h-8 rounded text-sm font-medium transition-colors',
-              item === page ? 'bg-primary-600 text-white' : 'hover:bg-gray-100 text-gray-700'
+              item === page
+                ? (accentClassName ?? 'bg-primary-600 text-white')
+                : 'hover:bg-gray-100 text-gray-700'
             )}
           >
             {item}

@@ -11,6 +11,7 @@ import * as R from '@/constants/routes'
 
 const AdminLoginPage = lazy(() => import('@/pages/admin/LoginPage'))
 const DashboardPage = lazy(() => import('@/pages/admin/DashboardPage'))
+const SystemCheckerPage = lazy(() => import('@/pages/admin/SystemCheckerPage'))
 const UsersPage = lazy(() => import('@/pages/admin/users/UsersPage'))
 const CreateUserPage = lazy(() => import('@/pages/admin/users/CreateUserPage'))
 const EditUserPage = lazy(() => import('@/pages/admin/users/EditUserPage'))
@@ -27,7 +28,6 @@ const PublicProductsPage = lazy(() => import('@/pages/public/ProductsPage'))
 const ProductDetailPage = lazy(() => import('@/pages/public/ProductDetailPage'))
 const LoginPage = lazy(() => import('@/pages/public/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/public/RegisterPage'))
-const OAuthCallbackPage = lazy(() => import('@/pages/public/OAuthCallbackPage'))
 const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage'))
 
 const ProfilePage = lazy(() => import('@/pages/public/customer/ProfilePage'))
@@ -58,6 +58,7 @@ export default function App() {
           >
             <Route index element={<Navigate to={R.ADMIN_DASHBOARD} replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="system-checker" element={<SystemCheckerPage />} />
 
             {/* super_admin only */}
             <Route
@@ -137,7 +138,6 @@ export default function App() {
             <Route path="/products/:id" element={<ProductDetailPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
-            <Route path="/auth/callback" element={<OAuthCallbackPage />} />
           </Route>
 
           {/* ── Customer (protected) ── */}
@@ -153,7 +153,7 @@ export default function App() {
           </Route>
 
           {/* ── 404 ── */}
-          <Route path="*" element={<NotFoundPage />} />
+          <Route path={R.NOT_FOUND} element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

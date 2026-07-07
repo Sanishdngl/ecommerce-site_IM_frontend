@@ -23,6 +23,8 @@ export default function ProductsPage() {
     label: c.name,
   }))
 
+  const activeCategoryName = categories?.find((c) => c.slug === categoryId)?.name
+
   const handleCategoryChange = (value: string) => {
     const params = new URLSearchParams(searchParams)
     if (value) {
@@ -43,15 +45,19 @@ export default function ProductsPage() {
   useDocumentTitle('Shop')
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8 space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">All Products</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+      <div className="flex items-end justify-between flex-wrap gap-4 pb-6 border-b border-ink/15">
+        <div>
+          <p className="font-stamp text-xs tracking-widest text-ink/50 mb-2">FULL CATALOG</p>
+          <h1 className="font-display text-3xl text-ink">{activeCategoryName ?? 'Everything in stock'}</h1>
+        </div>
         <div className="w-full sm:w-56">
           <Select
             placeholder="All categories"
             options={categoryOptions}
             value={categoryId}
             onChange={(e) => handleCategoryChange(e.target.value)}
+            className="bg-paper border-ink/30 rounded-none focus:ring-stamp focus:border-stamp"
           />
         </div>
       </div>

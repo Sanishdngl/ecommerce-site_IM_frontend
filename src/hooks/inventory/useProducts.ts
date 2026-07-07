@@ -11,6 +11,7 @@ import {
 } from '@/constants/queryParams'
 import type { Product, ApiPagination, StockAdjustment } from '@/types/api.types'
 import type { ProductListParams } from '@/lib/queryKeys'
+import type { ProductPayload } from '@/components/admin/ProductForm'
 
 interface ProductsListResponse {
   products: Product[]
@@ -112,10 +113,10 @@ export function useCreateProduct() {
   const qc = useQueryClient()
 
   return useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (payload: ProductPayload) => {
       const { data } = await adminApi.post<ProductResponse>(
         '/api/admin/inventory/products',
-        formData
+        payload
       )
       return data.product
     },
@@ -130,10 +131,10 @@ export function useUpdateProduct(id: string) {
   const qc = useQueryClient()
 
   return useMutation({
-    mutationFn: async (formData: FormData) => {
+    mutationFn: async (payload: Partial<ProductPayload> & { is_active?: boolean }) => {
       const { data } = await adminApi.put<ProductResponse>(
         `/api/admin/inventory/products/${id}`,
-        formData
+        payload
       )
       return data.product
     },
@@ -141,6 +142,56 @@ export function useUpdateProduct(id: string) {
       qc.invalidateQueries({ queryKey: queryKeys.products.detail(id) })
       qc.invalidateQueries({ queryKey: queryKeys.products.all })
       toast.success('Product updated successfully')
+    },
+  })
+}
+
+export function useUploadProductImage() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      productId,
+      file,
+      imageType = 'thumbnail',
+    }: {
+      productId: string
+      file: File
+      imageType?: 'thumbnail' | 'list_image'
+    }) => {
+      const formData = new FormData()
+      formData.append('image', file)
+      formData.append('image_type', imageType)
+      const { data } = await adminApi.post<{ url: string }>(
+        `/api/admin/inventory/products/${productId}/image`,
+        formData
+      )
+      return data
+    },
+    onSuccess: (_data, variables) => {
+      qc.invalidateQueries({ queryKey: queryKeys.products.detail(variables.productId) })
+      qc.invalidateQueries({ queryKey: queryKeys.products.all })
+      toast.success('Product image uploaded')
+    },
+    onError: () => {
+      toast.error('Product saved, but the image failed to upload')
+    },
+  })
+}
+
+export function useToggleProductActive() {
+  const qc = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({ id, is_active }: { id: string; is_active: boolean }) => {
+      const { data } = await adminApi.put<ProductResponse>(`/api/admin/inventory/products/${id}`, {
+        is_active,
+      })
+      return data.product
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.products.all })
+      toast.success('Product status updated')
     },
   })
 }
@@ -163,10 +214,10 @@ export function useAdjustStock(productId: string) {
   const qc = useQueryClient()
 
   return useMutation({
-    mutationFn: async (delta: number) => {
+    mutationFn: async ({ delta, reason }: { delta: number; reason?: string }) => {
       const { data } = await adminApi.patch<StockAdjustment>(
         `/api/admin/inventory/products/${productId}/stock`,
-        { delta }
+        { delta, reason }
       )
       return data
     },

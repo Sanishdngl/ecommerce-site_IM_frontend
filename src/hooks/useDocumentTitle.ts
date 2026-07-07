@@ -1,9 +1,16 @@
 import { useEffect } from 'react'
 
-const APP_NAME = 'ShopAdmin'
+const STOREFRONT_APP_NAME = 'Open Stock'
+const ADMIN_APP_NAME = 'Operations'
 
 export function useDocumentTitle(pageName: string) {
   useEffect(() => {
-    document.title = `${pageName} — ${APP_NAME}`
+    document.title = `${pageName} — ${STOREFRONT_APP_NAME}`
+  }, [pageName])
+}
+
+export function useAdminDocumentTitle(pageName: string) {
+  useEffect(() => {
+    document.title = `${pageName} — ${ADMIN_APP_NAME}`
   }, [pageName])
 }

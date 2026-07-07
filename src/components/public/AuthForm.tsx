@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
@@ -10,8 +11,32 @@ import {
 import { Input } from '@/components/common/Input'
 import { Button } from '@/components/common/Button'
 import { REGISTER, LOGIN } from '@/constants/routes'
-import { OAUTH_RETURN_TO_KEY } from '@/constants/storage'
-import { useLocation } from 'react-router-dom'
+import { useOAuth } from '@/hooks/customer/useCustomerAuth'
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string
+            callback: (response: { credential: string }) => void
+          }) => void
+          prompt: (
+            callback?: (notification: {
+              isNotDisplayed: () => boolean
+              getNotDisplayedReason: () => string
+              isSkippedMoment: () => boolean
+              getSkippedReason: () => string
+              isDismissedMoment: () => boolean
+              getDismissedReason: () => string
+            }) => void
+          ) => void
+        }
+      }
+    }
+  }
+}
 
 type Props =
   | {
@@ -26,24 +51,11 @@ type Props =
     }
 
 const oauthEnabled = import.meta.env.VITE_ENABLE_OAUTH === 'true'
-
-function buildGoogleAuthUrl(): string {
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
-  const redirectUri = import.meta.env.VITE_GOOGLE_REDIRECT_URI
-  const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    response_type: 'code',
-    scope: 'openid email profile',
-    access_type: 'offline',
-    prompt: 'consent',
-  })
-  return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
-}
+const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 
 export function AuthForm(props: Props) {
   const { mode, isPending } = props
-  const location = useLocation()
+  const { mutate: oauthLogin, isPending: isOAuthPending } = useOAuth()
 
   const schema = mode === 'login' ? LoginSchema : RegisterSchema
 
@@ -55,9 +67,36 @@ export function AuthForm(props: Props) {
     resolver: zodResolver(schema as never),
   })
 
+  useEffect(() => {
+    if (!oauthEnabled) return
+
+    // GIS script tag is async/defer — window.google may not exist on first
+    // render. Poll instead of relying on a re-render to retry.
+    const interval = window.setInterval(() => {
+      if (!window.google) return
+      window.google.accounts.id.initialize({
+        client_id: googleClientId,
+        callback: (response) => {
+          oauthLogin({ provider: 'google', token: response.credential })
+        },
+      })
+      window.clearInterval(interval)
+    }, 100)
+
+    return () => window.clearInterval(interval)
+  }, [oauthLogin])
+
   const handleGoogleClick = () => {
-    sessionStorage.setItem(OAUTH_RETURN_TO_KEY, location.pathname)
-    window.location.href = buildGoogleAuthUrl()
+    // prompt() fails silently on its own — pass a callback to see why
+    window.google?.accounts.id.prompt((notification) => {
+      if (notification.isNotDisplayed()) {
+        console.warn('GIS not displayed:', notification.getNotDisplayedReason())
+      } else if (notification.isSkippedMoment()) {
+        console.warn('GIS skipped:', notification.getSkippedReason())
+      } else if (notification.isDismissedMoment()) {
+        console.warn('GIS dismissed:', notification.getDismissedReason())
+      }
+    })
   }
 
   const onValidSubmit = handleSubmit((data) => {
@@ -79,12 +118,16 @@ export function AuthForm(props: Props) {
               label="First Name"
               placeholder="Jane"
               error={registerErrors.first_name?.message}
+              className="rounded-none border-ink/30 focus:ring-stamp focus:border-stamp"
+              labelClassName="text-ink/70"
               {...register('first_name' as keyof RegisterFormType)}
             />
             <Input
               label="Last Name"
               placeholder="Smith"
               error={registerErrors.last_name?.message}
+              className="rounded-none border-ink/30 focus:ring-stamp focus:border-stamp"
+              labelClassName="text-ink/70"
               {...register('last_name' as keyof RegisterFormType)}
             />
           </div>
@@ -95,6 +138,8 @@ export function AuthForm(props: Props) {
           type="email"
           placeholder="you@example.com"
           error={errors.email?.message}
+          className="rounded-none border-ink/30 focus:ring-stamp focus:border-stamp"
+          labelClassName="text-ink/70"
           {...register('email')}
         />
 
@@ -103,6 +148,8 @@ export function AuthForm(props: Props) {
           type="password"
           placeholder="••••••••"
           error={errors.password?.message}
+          className="rounded-none border-ink/30 focus:ring-stamp focus:border-stamp"
+          labelClassName="text-ink/70"
           {...register('password')}
         />
 
@@ -112,11 +159,13 @@ export function AuthForm(props: Props) {
             type="password"
             placeholder="••••••••"
             error={registerErrors.confirmPassword?.message}
+            className="rounded-none border-ink/30 focus:ring-stamp focus:border-stamp"
+            labelClassName="text-ink/70"
             {...register('confirmPassword' as keyof RegisterFormType)}
           />
         )}
 
-        <Button type="submit" className="w-full" loading={isPending}>
+        <Button type="submit" variant="stamp" className="w-full rounded-none" loading={isPending}>
           {mode === 'login' ? 'Sign in' : 'Create account'}
         </Button>
       </form>
@@ -125,17 +174,18 @@ export function AuthForm(props: Props) {
         <>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-200" />
+              <div className="w-full border-t border-ink/15" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-2 text-gray-400">or</span>
+              <span className="bg-paper px-2 font-stamp text-ink/40">or</span>
             </div>
           </div>
 
           <button
             type="button"
             onClick={handleGoogleClick}
-            className="w-full flex items-center justify-center gap-2 rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+            disabled={isOAuthPending}
+            className="w-full flex items-center justify-center gap-2 border border-ink/30 px-4 py-2 text-sm font-medium text-ink hover:bg-kraft/30 transition-colors disabled:opacity-50"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -160,11 +210,11 @@ export function AuthForm(props: Props) {
         </>
       )}
 
-      <p className="text-center text-sm text-gray-500">
+      <p className="text-center text-sm text-ink/50">
         {mode === 'login' ? (
           <>
             Don&apos;t have an account?{' '}
-            <Link to={REGISTER} className="text-primary-600 font-medium hover:underline">
+            <Link to={REGISTER} className="text-stamp font-medium hover:underline">
               Sign up
             </Link>
           </>

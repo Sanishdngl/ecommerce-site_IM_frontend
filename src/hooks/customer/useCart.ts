@@ -2,15 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { customerApi } from '@/lib/customerApi'
 import { queryKeys } from '@/lib/queryKeys'
-import type { CartItem, CartResponse, GuestCartItem } from '@/types/api.types'
+import { useCustomerAuthStore } from '@/stores/customerAuth.store'
+import type { CartItem, CartResponse } from '@/types/api.types'
 
 export function useCartQuery() {
+  const token = useCustomerAuthStore((s) => s.token)
+
   return useQuery({
     queryKey: queryKeys.cart.all,
     queryFn: async () => {
       const { data } = await customerApi.get<CartResponse>('/api/customer/cart')
       return data.items
     },
+    enabled: !!token,
   })
 }
 
@@ -72,27 +76,6 @@ export function useRemoveCartItem() {
     onSuccess: (items) => {
       qc.setQueryData(queryKeys.cart.all, items)
       toast.success('Removed from cart')
-    },
-  })
-}
-
-export function useMergeCart() {
-  const qc = useQueryClient()
-
-  return useMutation({
-    mutationFn: async (guestItems: GuestCartItem[]) => {
-      const results = await Promise.all(
-        guestItems.map((item) =>
-          customerApi.post<CartResponse>('/api/customer/cart', {
-            product_id: item.productId,
-            quantity: item.quantity,
-          })
-        )
-      )
-      return results[results.length - 1]?.data.items ?? []
-    },
-    onSuccess: (items) => {
-      qc.setQueryData(queryKeys.cart.all, items)
     },
   })
 }

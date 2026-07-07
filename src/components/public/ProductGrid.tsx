@@ -17,14 +17,14 @@ export function ProductGrid({ products, isLoading, isEmpty }: Props) {
   if (isEmpty) {
     return (
       <EmptyState
-        title="No products found"
-        description="Try adjusting your filters or check back later"
+        title="Nothing here right now"
+        description="This run is empty. Check another category, or come back once the next batch is counted in."
       />
     )
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-px bg-ink/15 border border-ink/15">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}

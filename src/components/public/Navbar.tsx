@@ -25,12 +25,15 @@ export function Navbar() {
     <div className="w-full">
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 max-w-7xl mx-auto">
         <div className="flex items-center gap-6">
-          <Link to={HOME} className="text-lg font-bold text-gray-900 shrink-0">
-            ShopFront
+          <Link
+            to={HOME}
+            className="font-display text-xl font-semibold text-ink shrink-0 tracking-tight"
+          >
+            Open Stock
           </Link>
 
           {/* Desktop category links */}
-          <nav className="hidden md:flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-5">
             {isLoading ? (
               <Skeleton variant="row" rows={1} className="w-48" />
             ) : (
@@ -40,8 +43,10 @@ export function Navbar() {
                   to={`${PRODUCTS}?categoryId=${cat.slug}`}
                   className={({ isActive }) =>
                     cn(
-                      'text-sm font-medium transition-colors',
-                      isActive ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'
+                      'text-sm font-medium transition-colors border-b-[1.5px] pb-0.5',
+                      isActive
+                        ? 'text-stamp border-stamp'
+                        : 'text-ink/60 border-transparent hover:text-ink'
                     )
                   }
                 >
@@ -53,10 +58,10 @@ export function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <Link to={CUSTOMER_CART} className="relative p-2 text-gray-600 hover:text-gray-900">
+          <Link to={CUSTOMER_CART} className="relative p-2 text-ink/70 hover:text-ink">
             <ShoppingCart size={20} />
             {cartCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-primary-600 text-white text-[10px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center min-w-[18px] min-h-[18px]">
+              <span className="absolute -top-1 -right-1 bg-stamp text-paper text-[10px] font-semibold rounded-full w-[18px] h-[18px] flex items-center justify-center">
                 {cartCount}
               </span>
             )}
@@ -66,14 +71,14 @@ export function Navbar() {
             <div className="hidden sm:flex items-center gap-3">
               <Link
                 to={CUSTOMER_PROFILE}
-                className="flex items-center gap-1.5 text-sm font-medium text-gray-700 hover:text-gray-900"
+                className="flex items-center gap-1.5 text-sm font-medium text-ink/80 hover:text-ink"
               >
                 <User size={16} />
                 {customer?.first_name ?? 'Profile'}
               </Link>
               <button
                 onClick={() => logoutCustomer()}
-                className="flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700"
+                className="flex items-center gap-1 text-sm text-ink/50 hover:text-ink/80"
               >
                 <LogOut size={14} />
                 Logout
@@ -82,7 +87,7 @@ export function Navbar() {
           ) : (
             <Link
               to={LOGIN}
-              className="hidden sm:block text-sm font-medium text-primary-600 hover:text-primary-700"
+              className="hidden sm:block text-sm font-medium text-stamp hover:text-stamp-dark"
             >
               Login
             </Link>
@@ -90,7 +95,7 @@ export function Navbar() {
 
           {/* Mobile toggle */}
           <button
-            className="md:hidden p-2 text-gray-600"
+            className="md:hidden p-2 text-ink/70"
             onClick={() => setMobileOpen((v) => !v)}
             aria-label="Toggle menu"
           >
@@ -101,24 +106,24 @@ export function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-gray-100 px-4 py-3 space-y-2">
+        <div className="md:hidden border-t border-ink/15 px-4 py-3 space-y-2 bg-paper">
           {(categories ?? []).map((cat) => (
             <Link
               key={cat.id}
               to={`${PRODUCTS}?categoryId=${cat.slug}`}
               onClick={() => setMobileOpen(false)}
-              className="block text-sm font-medium text-gray-700 py-1.5"
+              className="block text-sm font-medium text-ink/80 py-1.5"
             >
               {cat.name}
             </Link>
           ))}
-          <div className="pt-2 border-t border-gray-100">
+          <div className="pt-2 border-t border-ink/15">
             {isAuthenticated ? (
               <>
                 <Link
                   to={CUSTOMER_PROFILE}
                   onClick={() => setMobileOpen(false)}
-                  className="block text-sm font-medium text-gray-700 py-1.5"
+                  className="block text-sm font-medium text-ink/80 py-1.5"
                 >
                   Profile
                 </Link>
@@ -127,7 +132,7 @@ export function Navbar() {
                     logoutCustomer()
                     setMobileOpen(false)
                   }}
-                  className="block text-sm text-gray-500 py-1.5"
+                  className="block text-sm text-ink/50 py-1.5"
                 >
                   Logout
                 </button>
@@ -136,7 +141,7 @@ export function Navbar() {
               <Link
                 to={LOGIN}
                 onClick={() => setMobileOpen(false)}
-                className="block text-sm font-medium text-primary-600 py-1.5"
+                className="block text-sm font-medium text-stamp py-1.5"
               >
                 Login
               </Link>

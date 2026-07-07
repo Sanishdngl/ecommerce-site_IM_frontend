@@ -30,9 +30,10 @@ export default function RegisterPage() {
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Create your account</h1>
-          <p className="text-sm text-gray-500 mt-1">Join us and start shopping</p>
+        <div className="mb-8 text-center">
+          <p className="font-stamp text-xs tracking-widest text-ink/50 mb-2">ACCOUNT</p>
+          <h1 className="font-display text-3xl text-ink">Open an account</h1>
+          <p className="text-sm text-ink/60 mt-1">Track orders and see stock before it's gone</p>
         </div>
         <AuthForm mode="register" onSubmit={handleSubmit} isPending={isPending} />
       </div>

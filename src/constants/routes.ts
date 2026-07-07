@@ -1,6 +1,7 @@
 // Admin
 export const ADMIN_LOGIN = '/admin/login'
 export const ADMIN_DASHBOARD = '/admin/dashboard'
+export const ADMIN_SYSTEM_CHECKER = '/admin/system-checker'
 
 export const ADMIN_USERS = '/admin/users'
 export const ADMIN_USERS_NEW = '/admin/users/new'
@@ -22,9 +23,8 @@ export const PRODUCTS = '/products'
 export const productDetail = (id: string) => `/products/${id}`
 export const LOGIN = '/login'
 export const REGISTER = '/register'
-export const AUTH_CALLBACK = '/auth/callback'
 export const NOT_FOUND = '*'
 
-// Customer 
+// Customer
 export const CUSTOMER_PROFILE = '/customer/profile'
 export const CUSTOMER_CART = '/customer/cart'

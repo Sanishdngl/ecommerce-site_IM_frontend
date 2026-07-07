@@ -10,12 +10,15 @@ interface CustomerResponse {
 }
 
 export function useProfileQuery() {
+  const token = useCustomerAuthStore((s) => s.token)
+
   return useQuery({
     queryKey: queryKeys.profile.all,
     queryFn: async () => {
       const { data } = await customerApi.get<CustomerResponse>('/api/customer/profile')
       return data.customer
     },
+    enabled: !!token,
   })
 }
 

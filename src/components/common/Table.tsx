@@ -39,15 +39,15 @@ export function Table<T>({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-gray-200">
+    <div className="overflow-x-auto border border-hairline bg-white">
       <table className="w-full text-sm text-left">
-        <thead className="bg-gray-50 border-b border-gray-200">
+        <thead className="bg-console border-b border-hairline">
           {table.getHeaderGroups().map((hg) => (
             <tr key={hg.id}>
               {hg.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="px-4 py-3 font-medium text-gray-700 whitespace-nowrap"
+                  className="px-4 py-3 font-admin font-medium text-graphite/70 text-xs uppercase tracking-wide whitespace-nowrap"
                 >
                   {flexRender(header.column.columnDef.header, header.getContext())}
                 </th>
@@ -55,11 +55,11 @@ export function Table<T>({
             </tr>
           ))}
         </thead>
-        <tbody className="divide-y divide-gray-100">
+        <tbody className="divide-y divide-hairline">
           {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+            <tr key={row.id} className="hover:bg-console/60 transition-colors">
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-3 text-gray-700">
+                <td key={cell.id} className="px-4 py-3 text-graphite">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
@@ -69,8 +69,12 @@ export function Table<T>({
       </table>
 
       {pagination && onPageChange && (
-        <div className="px-4 py-3 border-t border-gray-200">
-          <Pagination pagination={pagination} onPageChange={onPageChange} />
+        <div className="px-4 py-3 border-t border-hairline">
+          <Pagination
+            pagination={pagination}
+            onPageChange={onPageChange}
+            accentClassName="bg-signal text-white"
+          />
         </div>
       )}
     </div>

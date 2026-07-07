@@ -90,7 +90,7 @@ export function useUpdateAdminUser(id: string) {
       password?: string
       role?: string
     }) => {
-      const { data } = await adminApi.patch<AdminUserResponse>(`/api/admin/users/${id}`, payload)
+      const { data } = await adminApi.put<AdminUserResponse>(`/api/admin/users/${id}`, payload)
       return data.user
     },
     onSuccess: () => {

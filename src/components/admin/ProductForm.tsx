@@ -16,8 +16,16 @@ interface Props {
   mode: 'create' | 'edit'
   defaultValues?: Partial<ProductFormInput>
   currentImageUrl?: Product['thumbnail_url']
-  onSubmit: (formData: FormData) => void
+  onSubmit: (data: ProductPayload, image: File | undefined) => void
   isPending?: boolean
+}
+
+export interface ProductPayload {
+  category_id: string
+  name: string
+  description?: string
+  price: string
+  stock_quantity: number
 }
 
 export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, isPending }: Props) {
@@ -45,16 +53,14 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
   }))
 
   const handleFormSubmit = (data: ProductFormType) => {
-    const formData = new FormData()
-    formData.append('category_id', data.category_id)
-    formData.append('name', data.name)
-    if (data.description) formData.append('description', data.description)
-    formData.append('price', String(data.price))
-    formData.append('stock_quantity', String(data.stock_quantity))
-    if (data.image) {
-      formData.append('image', data.image)
+    const payload: ProductPayload = {
+      category_id: data.category_id,
+      name: data.name,
+      price: data.price.toFixed(2),
+      stock_quantity: data.stock_quantity,
+      ...(data.description ? { description: data.description } : {}),
     }
-    onSubmit(formData)
+    onSubmit(payload, data.image)
   }
 
   return (
@@ -63,6 +69,8 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
         label="Name"
         placeholder="Classic White Tee"
         error={errors.name?.message}
+        labelClassName="text-graphite/70"
+        className="focus:ring-signal focus:border-signal"
         {...register('name')}
       />
 
@@ -71,6 +79,7 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
         options={categoryOptions}
         placeholder={categoriesLoading ? 'Loading categories…' : 'Select a category'}
         error={errors.category_id?.message}
+        className="focus:ring-signal focus:border-signal"
         {...register('category_id')}
       />
 
@@ -82,6 +91,8 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
           min="0"
           placeholder="29.99"
           error={errors.price?.message}
+          labelClassName="text-graphite/70"
+          className="focus:ring-signal focus:border-signal"
           {...register('price')}
         />
         <Input
@@ -91,19 +102,21 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
           min="0"
           placeholder="100"
           error={errors.stock_quantity?.message}
+          labelClassName="text-graphite/70"
+          className="focus:ring-signal focus:border-signal"
           {...register('stock_quantity')}
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label htmlFor="description" className="text-sm font-medium text-gray-700">
+        <label htmlFor="description" className="text-sm font-medium text-graphite/70">
           Description
         </label>
         <textarea
           id="description"
           rows={3}
           placeholder="100% cotton t-shirt"
-          className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="w-full rounded-md border border-hairline px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-signal focus:border-signal"
           {...register('description')}
         />
         {errors.description?.message && (
@@ -116,7 +129,7 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
         control={control}
         render={({ field }) => (
           <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-gray-700">Product Image</label>
+            <label className="text-sm font-medium text-graphite/70">Product Image</label>
             <input
               type="file"
               accept="image/*"
@@ -127,13 +140,13 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
                   setPreview(URL.createObjectURL(file))
                 }
               }}
-              className="text-sm text-gray-600"
+              className="text-sm text-graphite/70"
             />
             {preview && (
               <img
                 src={preview}
                 alt="Preview"
-                className="mt-2 w-32 h-32 object-cover rounded-lg border border-gray-200"
+                className="mt-2 w-32 h-32 object-cover rounded-lg border border-hairline"
               />
             )}
             {errors.image?.message && (
@@ -144,7 +157,7 @@ export function ProductForm({ mode, defaultValues, currentImageUrl, onSubmit, is
       />
 
       <div className="pt-2">
-        <Button type="submit" className="w-full" loading={isPending}>
+        <Button type="submit" variant="signal" className="w-full" loading={isPending}>
           {mode === 'create' ? 'Create Product' : 'Save Changes'}
         </Button>
       </div>

@@ -11,23 +11,25 @@ export function CartSummary({ items }: Props) {
   const totalPrice = items.reduce((sum, i) => sum + Number(i.price) * i.quantity, 0)
 
   return (
-    <div className="rounded-xl border border-gray-200 p-6 space-y-4 sticky top-20">
-      <h2 className="text-base font-semibold text-gray-900">Order Summary</h2>
+    <div className="border border-ink/20 p-6 space-y-4 sticky top-20 bg-paper">
+      <h2 className="font-display text-lg text-ink">Running total</h2>
 
-      <div className="flex justify-between text-sm text-gray-600">
+      <div className="flex justify-between text-sm text-ink/60">
         <span>Items ({totalItems})</span>
-        <span>{formatCurrency(totalPrice)}</span>
+        <span className="font-stamp">{formatCurrency(totalPrice)}</span>
       </div>
 
-      <div className="border-t border-gray-100 pt-4 flex justify-between text-base font-semibold text-gray-900">
-        <span>Total</span>
-        <span>{formatCurrency(totalPrice)}</span>
+      <div className="border-t border-ink/15 pt-4 flex justify-between items-baseline">
+        <span className="text-sm font-medium text-ink">Total</span>
+        <span className="font-stamp text-lg text-ink">{formatCurrency(totalPrice)}</span>
       </div>
 
-      <Button className="w-full" disabled>
-        Proceed to Checkout
+      <Button variant="stamp" className="w-full rounded-none" disabled>
+        Proceed to checkout
       </Button>
-      <p className="text-xs text-gray-400 text-center">Checkout is coming soon</p>
+      <p className="font-stamp text-[10px] tracking-wide text-ink/40 text-center">
+        CHECKOUT NOT YET OPEN
+      </p>
     </div>
   )
 }

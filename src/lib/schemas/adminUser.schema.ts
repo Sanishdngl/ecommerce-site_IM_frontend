@@ -12,10 +12,9 @@ export const CreateAdminUserSchema = AdminUserSchema.extend({
 })
 
 export const AdminLoginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(1, "Password is required"),
+  username: z.string().min(1, 'Username is required'),
+  password: z.string().min(1, 'Password is required'),
 })
 
 export type AdminUserFormType = z.infer<typeof AdminUserSchema>
-export type CreateAdminUserFormType = z.infer<typeof CreateAdminUserSchema>
 export type AdminLoginFormType = z.infer<typeof AdminLoginSchema>

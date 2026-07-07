@@ -1,18 +1,36 @@
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
-import { Package, Tag, Users, TrendingUp } from 'lucide-react'
+import { Package, Tag, Users, AlertTriangle } from 'lucide-react'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
-
-const stats = [
-  { label: 'Total Products', value: '—', icon: <Package className="w-6 h-6 text-primary-600" /> },
-  { label: 'Categories', value: '—', icon: <Tag className="w-6 h-6 text-green-600" /> },
-  { label: 'Admin Users', value: '—', icon: <Users className="w-6 h-6 text-purple-600" /> },
-  { label: 'Orders', value: '—', icon: <TrendingUp className="w-6 h-6 text-amber-600" /> },
-]
+import { useDashboardStats } from '@/hooks/admin/useSystem'
 
 export default function DashboardPage() {
   const user = useAdminAuthStore((s) => s.user)
+  const { data, isLoading, isError } = useDashboardStats()
 
   useDocumentTitle('Dashboard')
+
+  const stats = [
+    {
+      label: 'Total Products',
+      value: data?.total_products,
+      icon: <Package className="w-6 h-6 text-primary-600" />,
+    },
+    {
+      label: 'Categories',
+      value: data?.total_categories,
+      icon: <Tag className="w-6 h-6 text-green-600" />,
+    },
+    {
+      label: 'Admin Users',
+      value: data?.total_admin_users,
+      icon: <Users className="w-6 h-6 text-purple-600" />,
+    },
+    {
+      label: 'Low Stock Products',
+      value: data?.low_stock_count,
+      icon: <AlertTriangle className="w-6 h-6 text-amber-600" />,
+    },
+  ]
 
   return (
     <div className="space-y-6">
@@ -28,9 +46,13 @@ export default function DashboardPage() {
             className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4"
           >
             <div className="p-2 bg-gray-50 rounded-lg">{stat.icon}</div>
-            <div>
+            <div className="min-w-0">
               <p className="text-sm text-gray-500">{stat.label}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+              {isLoading ? (
+                <div className="w-12 h-7 mt-1 rounded bg-gray-200 animate-pulse" />
+              ) : (
+                <p className="text-2xl font-bold text-gray-900">{isError ? '—' : stat.value}</p>
+              )}
             </div>
           </div>
         ))}
@@ -39,8 +61,8 @@ export default function DashboardPage() {
       <div className="bg-white rounded-xl border border-gray-200 p-6">
         <h2 className="text-base font-semibold text-gray-700 mb-2">Getting Started</h2>
         <p className="text-sm text-gray-500">
-          Use the sidebar to manage your inventory, categories, products, and admin users. More
-          dashboard analytics will be available in a future release.
+          Use the sidebar to manage your inventory, categories, products, and admin users. Check
+          System Checker for service health and a live audit log of recent admin activity.
         </p>
       </div>
     </div>

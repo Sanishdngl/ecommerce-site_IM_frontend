@@ -4,16 +4,19 @@ import type { Category } from '@/types/api.types'
 
 interface Props {
   category: Category
+  index: number
 }
 
-export function CategoryCard({ category }: Props) {
+export function CategoryCard({ category, index }: Props) {
   return (
     <Link
       to={`${PRODUCTS}?categoryId=${category.slug}`}
-      className="group relative flex items-center justify-center h-32 sm:h-40 rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 overflow-hidden"
+      className="group relative flex flex-col justify-between h-32 sm:h-40 bg-paper px-4 py-3 overflow-hidden transition-colors hover:bg-kraft/40"
     >
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-      <span className="relative text-white font-semibold text-lg text-center px-4">
+      <span className="font-stamp text-[11px] tracking-widest text-ink/40">
+        {String(index + 1).padStart(2, '0')}
+      </span>
+      <span className="font-display text-lg leading-tight text-ink group-hover:text-stamp transition-colors">
         {category.name}
       </span>
     </Link>

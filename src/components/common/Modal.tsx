@@ -34,12 +34,7 @@ export function Modal({ isOpen, onClose, title, children, className }: Props) {
   if (!isOpen) return null
 
   return createPortal(
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      aria-modal="true"
-      role="dialog"
-      aria-labelledby="modal-title"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
 
@@ -47,6 +42,9 @@ export function Modal({ isOpen, onClose, title, children, className }: Props) {
       <div
         ref={dialogRef}
         tabIndex={-1}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
         className={cn(
           'relative z-10 bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto focus:outline-none',
           className

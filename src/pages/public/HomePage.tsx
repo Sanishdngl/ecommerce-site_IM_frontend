@@ -13,32 +13,51 @@ export default function HomePage() {
 
   useDocumentTitle('Home')
 
+  const today = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 space-y-12">
-      <section className="text-center py-8">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">
-          Discover Products You&apos;ll Love
+    <div className="max-w-7xl mx-auto px-4 sm:px-6">
+      <section className="py-14 sm:py-20 border-b border-ink/15">
+        <p className="font-stamp text-xs tracking-widest text-ink/50 mb-4">
+          LEDGER — {today.toUpperCase()}
+        </p>
+        <h1 className="font-display text-4xl sm:text-6xl leading-[1.05] text-ink max-w-2xl">
+          Made in small runs.
+          <br />
+          Counted, not padded.
         </h1>
-        <p className="text-gray-500 mt-3 max-w-md mx-auto">
-          Browse our curated categories and find exactly what you&apos;re looking for.
+        <p className="text-ink/60 mt-5 max-w-md text-[15px] leading-relaxed">
+          Every listing shows what's actually left on the shelf. When it's gone, we say so — no
+          restock promises we can't keep.
         </p>
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Shop by Category</h2>
+      <section className="py-12 border-b border-ink/15">
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="font-display text-2xl text-ink">Browse by category</h2>
+        </div>
         {categoriesLoading ? (
           <Skeleton variant="grid" columns={4} />
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {(categories ?? []).map((cat) => (
-              <CategoryCard key={cat.id} category={cat} />
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-px bg-ink/15 border border-ink/15">
+            {(categories ?? []).map((cat, i) => (
+              <CategoryCard key={cat.id} category={cat} index={i} />
             ))}
           </div>
         )}
       </section>
 
-      <section>
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">Featured Products</h2>
+      <section className="py-12">
+        <div className="flex items-baseline justify-between mb-5">
+          <h2 className="font-display text-2xl text-ink">Currently in stock</h2>
+          <span className="font-stamp text-xs text-ink/40">
+            {featuredData?.data.length ?? 0} shown
+          </span>
+        </div>
         <ProductGrid
           products={featuredData?.data ?? []}
           isLoading={productsLoading}

@@ -103,5 +103,8 @@ export function useDeleteCategory() {
       qc.invalidateQueries({ queryKey: queryKeys.categories.all })
       toast.success('Category deleted')
     },
+    onError: () => {
+      toast.error('Failed to delete category')
+    },
   })
 }

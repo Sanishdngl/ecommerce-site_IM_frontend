@@ -21,8 +21,8 @@ export function BulkUploadForm() {
     setExcelFile(file)
   }
 
-  const handleImageArchiveSelect = (file: File) => {
-    setImageFiles([file])
+  const handleImagesSelect = (files: File[]) => {
+    setImageFiles(files)
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -45,7 +45,7 @@ export function BulkUploadForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+        <div className="flex items-center gap-2 text-sm font-medium text-graphite/70">
           <FileSpreadsheet size={16} />
           Product Spreadsheet (.xlsx) — required
         </div>
@@ -54,26 +54,31 @@ export function BulkUploadForm() {
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+        <div className="flex items-center gap-2 text-sm font-medium text-graphite/70">
           <Images size={16} />
-          Product Images (.zip) — optional
+          Product Images — optional
         </div>
+        <p className="text-xs text-gray-500">
+          Select individual image files (not a .zip — the server matches each image to a
+          row by filename, so name each file to match the spreadsheet).
+        </p>
         <FileDropzone
-          accept=".zip,image/*"
-          maxSizeMb={50}
-          onFileSelect={handleImageArchiveSelect}
+          accept="image/*"
+          maxSizeMb={10}
+          multiple
+          onFilesSelect={handleImagesSelect}
         />
       </div>
 
       {isPending && (
         <div className="space-y-1">
-          <div className="flex justify-between text-xs text-gray-500">
+          <div className="flex justify-between font-stamp text-xs text-graphite/60">
             <span>Uploading…</span>
             <span>{progress}%</span>
           </div>
-          <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div className="w-full h-2 bg-hairline rounded-full overflow-hidden">
             <div
-              className="h-full bg-primary-600 transition-all duration-150"
+              className="h-full bg-signal transition-all duration-150"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -81,22 +86,22 @@ export function BulkUploadForm() {
       )}
 
       {result && (
-        <div className="rounded-lg border border-gray-200 p-4 space-y-3">
-          <h3 className="text-sm font-semibold text-gray-900">Upload Summary</h3>
+        <div className="rounded-lg border border-hairline p-4 space-y-3 bg-white">
+          <h3 className="font-admin text-sm font-semibold text-graphite">Upload Summary</h3>
           <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="rounded-lg bg-gray-50 p-3">
-              <p className="text-2xl font-bold text-gray-900">{result.total}</p>
-              <p className="text-xs text-gray-500 mt-1">Total Rows</p>
+            <div className="rounded-lg bg-console p-3">
+              <p className="font-stamp text-2xl font-bold text-graphite">{result.total}</p>
+              <p className="text-xs text-graphite/50 mt-1">Total Rows</p>
             </div>
             <div className="rounded-lg bg-green-50 p-3">
-              <p className="text-2xl font-bold text-green-700 flex items-center justify-center gap-1">
+              <p className="font-stamp text-2xl font-bold text-green-700 flex items-center justify-center gap-1">
                 <CheckCircle2 size={18} />
                 {result.success}
               </p>
               <p className="text-xs text-green-600 mt-1">Created</p>
             </div>
             <div className="rounded-lg bg-red-50 p-3">
-              <p className="text-2xl font-bold text-red-700 flex items-center justify-center gap-1">
+              <p className="font-stamp text-2xl font-bold text-red-700 flex items-center justify-center gap-1">
                 <XCircle size={18} />
                 {result.failed}
               </p>
@@ -106,8 +111,8 @@ export function BulkUploadForm() {
 
           {result.errors.length > 0 && (
             <div className="space-y-1">
-              <p className="text-xs font-medium text-gray-700">Errors</p>
-              <ul className="text-xs text-red-600 space-y-1 max-h-40 overflow-y-auto">
+              <p className="text-xs font-medium text-graphite/70">Errors</p>
+              <ul className="font-stamp text-xs text-red-600 space-y-1 max-h-40 overflow-y-auto">
                 {result.errors.map((err, idx) => (
                   <li key={idx}>
                     Row {err.row}: {err.message}
@@ -119,7 +124,7 @@ export function BulkUploadForm() {
         </div>
       )}
 
-      <Button type="submit" className="w-full" loading={isPending} disabled={!excelFile}>
+      <Button type="submit" variant="signal" className="w-full" loading={isPending} disabled={!excelFile}>
         Upload Products
       </Button>
     </form>

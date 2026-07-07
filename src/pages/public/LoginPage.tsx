@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import toast from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 import { useCustomerAuthStore } from '@/stores/customerAuth.store'
 import { useLogin } from '@/hooks/customer/useCustomerAuth'
 import { AuthForm } from '@/components/public/AuthForm'
@@ -10,19 +9,12 @@ import { useDocumentTitle } from '@/hooks/useDocumentTitle'
 
 export default function LoginPage() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
   const isAuthenticated = useCustomerAuthStore((s) => s.isAuthenticated())
   const { mutate: login, isPending } = useLogin()
 
   useEffect(() => {
     if (isAuthenticated) navigate(CUSTOMER_PROFILE, { replace: true })
   }, [isAuthenticated, navigate])
-
-  useEffect(() => {
-    if (searchParams.get('error') === 'oauth_failed') {
-      toast.error('Google sign-in failed. Please try again.')
-    }
-  }, [searchParams])
 
   const handleSubmit = (data: LoginFormType) => {
     login(data)
@@ -33,9 +25,10 @@ export default function LoginPage() {
   return (
     <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-sm">
-        <div className="mb-6 text-center">
-          <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-          <p className="text-sm text-gray-500 mt-1">Sign in to your account</p>
+        <div className="mb-8 text-center">
+          <p className="font-stamp text-xs tracking-widest text-ink/50 mb-2">ACCOUNT</p>
+          <h1 className="font-display text-3xl text-ink">Welcome back</h1>
+          <p className="text-sm text-ink/60 mt-1">Sign in to pick up where you left off</p>
         </div>
         <AuthForm mode="login" onSubmit={handleSubmit} isPending={isPending} />
       </div>

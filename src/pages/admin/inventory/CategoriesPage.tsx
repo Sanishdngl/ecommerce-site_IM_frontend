@@ -10,12 +10,17 @@ import { formatDate } from '@/utils/formatDate'
 import { ADMIN_CATEGORIES_NEW, adminCategoriesEdit } from '@/constants/routes'
 import type { Category } from '@/types/api.types'
 import { useDocumentTitle } from '@/hooks/useDocumentTitle'
+import { useAdminAuthStore } from '@/stores/adminAuth.store'
 
 export default function CategoriesPage() {
   const navigate = useNavigate()
+  const role = useAdminAuthStore((s) => s.role)
   const { data: categories, isLoading } = useAdminCategoryList()
   const { mutateAsync: deleteCategory } = useDeleteCategory()
   const [deleteTarget, setDeleteTarget] = useState<Category | null>(null)
+
+  const canWrite = role === 'super_admin' || role === 'maintainer'
+  const canDelete = role === 'super_admin'
 
   const columns: ColumnDef<Category, unknown>[] = [
     { header: 'Name', accessorKey: 'name' },
@@ -38,27 +43,30 @@ export default function CategoriesPage() {
       id: 'actions',
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(adminCategoriesEdit(row.original.id))}
-            className="p-1.5 text-gray-500 hover:text-primary-600 transition-colors"
-            title="Edit"
-          >
-            <Pencil size={15} />
-          </button>
-          <button
-            onClick={() => setDeleteTarget(row.original)}
-            className="p-1.5 text-gray-500 hover:text-red-600 transition-colors"
-            title="Delete"
-          >
-            <Trash2 size={15} />
-          </button>
+          {canWrite && (
+            <button
+              onClick={() => navigate(adminCategoriesEdit(row.original.id))}
+              className="p-1.5 text-gray-500 hover:text-primary-600 transition-colors"
+              title="Edit"
+            >
+              <Pencil size={15} />
+            </button>
+          )}
+          {canDelete && (
+            <button
+              onClick={() => setDeleteTarget(row.original)}
+              className="p-1.5 text-gray-500 hover:text-red-600 transition-colors"
+              title="Delete"
+            >
+              <Trash2 size={15} />
+            </button>
+          )}
         </div>
       ),
     },
   ]
 
   useDocumentTitle('Categories')
-
 
   return (
     <div className="space-y-6">
@@ -67,10 +75,12 @@ export default function CategoriesPage() {
           <h1 className="text-2xl font-bold text-gray-900">Categories</h1>
           <p className="text-gray-500 text-sm mt-1">Manage product categories</p>
         </div>
-        <Button onClick={() => navigate(ADMIN_CATEGORIES_NEW)}>
-          <Plus size={16} />
-          New Category
-        </Button>
+        {canWrite && (
+          <Button onClick={() => navigate(ADMIN_CATEGORIES_NEW)}>
+            <Plus size={16} />
+            New Category
+          </Button>
+        )}
       </div>
 
       <Table

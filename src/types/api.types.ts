@@ -73,6 +73,43 @@ export interface StockAdjustment {
   stock_quantity: number
 }
 
+// System checker
+export interface DashboardStats {
+  total_products: number
+  total_categories: number
+  total_admin_users: number
+  low_stock_count: number
+}
+
+export interface HealthStatus {
+  service: string
+  ok: boolean
+  message: string
+  checked_at: string
+}
+
+export interface SystemHealth {
+  gateway: HealthStatus
+  admin: HealthStatus
+  inventory: HealthStatus
+  customer: HealthStatus
+}
+
+export type AuditEntityType = 'admin_user' | 'product' | 'category'
+export type AuditAction = 'create' | 'update' | 'delete'
+
+export interface AuditLogEntry {
+  id: string
+  entity_type: AuditEntityType
+  entity_id: string
+  action: AuditAction
+  performed_by: string
+  performed_by_username: string
+  metadata: Record<string, unknown> | null
+  ip_address: string
+  created_at: string
+}
+
 // Customer
 export interface Customer {
   id: string

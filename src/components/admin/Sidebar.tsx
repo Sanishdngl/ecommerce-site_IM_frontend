@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Tag, Package, Upload, Menu, X } from 'lucide-react'
+import { LayoutDashboard, Users, Tag, Package, Upload, Menu, X, ActivitySquare } from 'lucide-react'
 import { useAdminAuthStore } from '@/stores/adminAuth.store'
 import { cn } from '@/utils/cn'
 import * as R from '@/constants/routes'
@@ -18,6 +18,11 @@ const navItems: NavItem[] = [
     label: 'Dashboard',
     to: R.ADMIN_DASHBOARD,
     icon: <LayoutDashboard size={18} />,
+  },
+  {
+    label: 'System Checker',
+    to: R.ADMIN_SYSTEM_CHECKER,
+    icon: <ActivitySquare size={18} />,
   },
   {
     label: 'Users',

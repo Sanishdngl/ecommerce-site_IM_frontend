@@ -5,8 +5,8 @@ import { Footer } from '@/components/public/Footer'
 
 export function PublicLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      <header className="sticky top-0 z-40 bg-white border-b border-gray-200 h-16 flex items-center px-6">
+    <div className="storefront min-h-screen flex flex-col font-body">
+      <header className="sticky top-0 z-40 bg-paper/95 backdrop-blur-sm border-b border-ink/15 h-16 flex items-center px-6">
         <Navbar />
       </header>
 
@@ -16,7 +16,7 @@ export function PublicLayout() {
         </ErrorBoundary>
       </main>
 
-      <footer className="bg-gray-900 text-gray-400 py-8">
+      <footer className="bg-ink text-paper/70 py-10">
         <Footer />
       </footer>
     </div>

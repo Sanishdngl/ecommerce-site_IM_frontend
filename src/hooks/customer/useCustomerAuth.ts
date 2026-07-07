@@ -73,6 +73,8 @@ export function useLogin() {
 }
 
 export function useOAuth() {
+  const navigate = useNavigate()
+  const location = useLocation()
   const login = useCustomerAuthStore((s) => s.login)
   const mergePendingCart = useCustomerAuthStore((s) => s.mergePendingCart)
 
@@ -88,6 +90,12 @@ export function useOAuth() {
     onSuccess: async (data) => {
       login(data)
       await mergePendingCart()
+      toast.success(`Welcome, ${data.customer.first_name}!`)
+      const from = (location.state as { from?: Location })?.from?.pathname
+      navigate(from ?? HOME, { replace: true })
+    },
+    onError: () => {
+      toast.error('Google sign-in failed')
     },
   })
 }

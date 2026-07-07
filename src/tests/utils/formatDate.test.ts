@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { formatDate, formatDateTime } from '@/utils/formatDate'
 
 describe('formatDate', () => {
@@ -6,8 +6,15 @@ describe('formatDate', () => {
     expect(formatDate('2026-01-15T00:00:00.000Z')).toBe('Jan 15, 2026')
   })
 
-  it('formats an edge-of-year date correctly', () => {
-    expect(formatDate('2025-12-31T23:00:00.000Z')).toBe('Jan 1, 2026')
+  describe('in a UTC+5:45 timezone (Asia/Kathmandu)', () => {
+    afterEach(() => {
+      vi.unstubAllEnvs()
+    })
+
+    it('formats an edge-of-year date correctly, rolled forward across midnight', () => {
+      vi.stubEnv('TZ', 'Asia/Kathmandu')
+      expect(formatDate('2025-12-31T23:00:00.000Z')).toBe('Jan 1, 2026')
+    })
   })
 })
 

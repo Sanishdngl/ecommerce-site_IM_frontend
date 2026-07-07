@@ -22,6 +22,13 @@ export interface ProductListParams {
   categoryId?: string
 }
 
+export interface AuditLogListParams {
+  page: number
+  limit: number
+  entityType?: string
+  action?: string
+}
+
 export const queryKeys = {
   adminUsers: {
     all: ['adminUsers'] as const,
@@ -43,5 +50,10 @@ export const queryKeys = {
   },
   profile: {
     all: ['profile'] as const,
+  },
+  system: {
+    dashboardStats: ['system', 'dashboardStats'] as const,
+    health: ['system', 'health'] as const,
+    auditLogs: (params: AuditLogListParams) => ['system', 'auditLogs', params] as const,
   },
 }

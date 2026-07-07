@@ -21,7 +21,7 @@ export function useBulkUpload() {
         '/api/admin/inventory/bulk-upload',
         formData,
         {
-          headers: { 'Content-Type': 'multipart/form-data' },
+          headers: { 'Content-Type': undefined }, // let axios set multipart boundary; hardcoded value above lacked one
           onUploadProgress: (event) => {
             if (event.total) {
               setProgress(Math.round((event.loaded / event.total) * 100))

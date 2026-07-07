@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import type { Customer, CustomerAuthResponse } from '@/types/api.types'
 import { useCartStore } from './cart.store'
 import { customerApi } from '@/lib/customerApi'
+import { queryClient } from '@/lib/queryClient'
+import { queryKeys } from '@/lib/queryKeys'
 import type { CartResponse } from '@/types/api.types'
 
 interface CustomerAuthState {
@@ -13,7 +15,6 @@ interface CustomerAuthActions {
   login: (response: CustomerAuthResponse) => void
   logout: () => void
   setSession: (token: string, customer: Customer) => void
-  setToken: (token: string) => void
   isAuthenticated: () => boolean
   mergePendingCart: () => Promise<void>
 }
@@ -37,14 +38,12 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
 
   logout: () => {
     set(initialState)
+    queryClient.removeQueries({ queryKey: queryKeys.cart.all })
+    queryClient.removeQueries({ queryKey: queryKeys.profile.all })
   },
 
   setSession: (token: string, customer: Customer) => {
     set({ token, customer })
-  },
-
-  setToken: (token: string) => {
-    set({ token })
   },
 
   isAuthenticated: () => {
@@ -63,6 +62,7 @@ export const useCustomerAuthStore = create<CustomerAuthStore>()((set, get) => ({
         })
       }
       useCartStore.getState().clearCart()
+      await queryClient.invalidateQueries({ queryKey: queryKeys.cart.all })
     } catch {
       console.error('[customerAuth] Failed to merge guest cart')
     }
