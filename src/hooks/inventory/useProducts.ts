@@ -39,6 +39,7 @@ export function useAdminProductList(params: Partial<ProductListParams> = {}) {
           category_id: merged.categoryId || undefined,
           page: merged.page,
           limit: merged.limit,
+          include_inactive: merged.includeInactive || undefined,
         },
       })
       return {

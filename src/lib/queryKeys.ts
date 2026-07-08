@@ -20,6 +20,7 @@ export interface ProductListParams {
   sort: string
   order: SortOrder
   categoryId?: string
+  includeInactive?: boolean
 }
 
 export interface AuditLogListParams {
